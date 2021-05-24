@@ -94,7 +94,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     boolean sortRoles = false
     boolean forceLowercaseRoles = true
     UserAttributeMapping userAttributeMapping = new UserAttributeMapping()
-    long maxAuthenticationAge = 28800
+    long maxAuthenticationAge = 43200
 
     String signatureDigest = "SHA1" // SHA1 is the default registered in DefaultSecurityConfigurationBootstrap.populateSignatureParams
 
