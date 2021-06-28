@@ -278,7 +278,13 @@ class OpsmxOesController {
     String filename = files ? files.getOriginalFilename() : ''
     return addOrUpdateSpinnakerCloudProverAccount(files, postData.get("postData"))
   }
-
+  
+  @ApiOperation(value = "Add or Update V1 Spinnaker x509")
+  @RequestMapping(value = "/accountsConfig/v1/spinnakerX509", method = RequestMethod.POST)
+  Object addOrUpdateSpinnakerSetupV1(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
+	return addOrUpdateSpinnakerV1(files, postData.get("postData"))
+  }
+  
   private String addOrUpdateSpinnakerCloudProverAccount(MultipartFile files, String data) {
     Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
     Map headersMap = new HashMap()
@@ -319,6 +325,27 @@ class OpsmxOesController {
       def response = okHttpClient.newCall(request).execute()
       return response.body()?.string() ?: "Unknown reason: " + response.code()
     }.call() as Object
+  }
+
+  private Object addOrUpdateSpinnakerV1(MultipartFile files, String data) {
+	  Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
+	  Map headersMap = new HashMap()
+	  authenticationHeaders.each { key, val ->
+		if(val.isPresent())
+		  headersMap.putAt(key,val.get())
+		else
+		  headersMap.putAt(key,"")
+	  }
+	  AuthenticatedRequest.propagate {
+		def request = new Request.Builder()
+		  .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/v1/spinnakerX509")
+		  .headers(Headers.of(headersMap))
+		  .post(uploadFileOkHttp(data,files))
+		  .build()
+  
+		def response = okHttpClient.newCall(request).execute()
+		return response.body()?.string() ?: "Unknown reason: " + response.code()
+	  }.call() as Object
   }
 
   private String addOrUpdateCloudProverAccount(MultipartFile files, String data) {
