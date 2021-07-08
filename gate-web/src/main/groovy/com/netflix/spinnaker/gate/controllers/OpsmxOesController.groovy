@@ -80,7 +80,7 @@ class OpsmxOesController {
                         @RequestParam(value = "startTime", required = false) String startTime,
                         @RequestParam(value = "endTime", required = false) String endTime) {
 
-    return opsmxOesService.getOesResponse(type, source, isTreeView, isLatest,
+    return opsmxOesService.getOesResponse(type, source,source1,source2,isTreeView, isLatest,
             applicationName, chartId, imageSource, accountName, startTime, endTime)
   }
 
