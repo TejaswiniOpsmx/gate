@@ -66,9 +66,11 @@ class OpsmxOesController {
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
-  @RequestMapping(value = "/{type}/{source}", method = RequestMethod.GET)
+  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getOesResponse(@PathVariable("type") String type,
                         @PathVariable("source") String source,
+                        @PathVariable("source1") String source1,
+                        @PathVariable("source2") String source2,
                         @RequestParam(value = "isTreeView", required = false) boolean isTreeView,
                         @RequestParam(value = "isLatest", required = false) boolean isLatest,
                         @RequestParam(value = "applicationName", required = false) String applicationName,
