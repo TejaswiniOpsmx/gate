@@ -55,7 +55,7 @@ interface OpsmxPlatformService {
 
 
   @GET("/platformservice/{version}/datasource/plugins/{pluginName}/image")
-  byte[] getPlatformResponse8(@Path('version') String version,
+  Array getPlatformResponse8(@Path('version') String version,
                               @Path('pluginName') String pluginName)
 
 
