@@ -54,11 +54,9 @@ interface OpsmxPlatformService {
                               @Query("accountName") String accountName)
 
 
-  @GET("/platformservice/{version}/{type}/{source}/{source1}/image")
+  @GET("/platformservice/{version}/datasource/plugins/{pluginName}/image")
   byte[] getPlatformResponse8(@Path('version') String version,
-                              @Path('type') String type,
-                              @Path('source') String source,
-                              @Path('source1') String source1)
+                              @Path('pluginName') String pluginName)
 
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
