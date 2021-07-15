@@ -18,6 +18,7 @@ package com.netflix.spinnaker.gate.services.internal
 
 
 import retrofit.http.*
+import java.lang.reflect.Array
 
 interface OpsmxPlatformService {
 
