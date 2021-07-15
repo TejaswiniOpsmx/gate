@@ -55,7 +55,7 @@ interface OpsmxPlatformService {
 
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}/image")
-  ResponseEntity<byte[]> getPlatformResponse8(@Path('version') String version,
+  byte[] getPlatformResponse8(@Path('version') String version,
                               @Path('type') String type,
                               @Path('source') String source,
                               @Path('source1') String source1)
