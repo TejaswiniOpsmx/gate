@@ -54,12 +54,11 @@ interface OpsmxPlatformService {
                               @Query("accountName") String accountName)
 
 
-  @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
+  @GET("/platformservice/{version}/{type}/{source}/{source1}/image")
   byte[] getPlatformResponse8(@Path('version') String version,
                               @Path('type') String type,
                               @Path('source') String source,
                               @Path('source1') String source1,
-                              @Path('source2') String source2,
                               @Query("permissionId") String permissionId,
                               @Query("resourceType") String resourceType)
 
