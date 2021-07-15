@@ -121,13 +121,11 @@ class OpsmxPlatformController {
 
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/image", method = RequestMethod.GET)
-  byte[] getPlatformResponse8(@PathVariable("version") String version,
+  ResponseEntity<byte[]> getPlatformResponse8(@PathVariable("version") String version,
                               @PathVariable("type") String type,
                               @PathVariable("source") String source,
-                              @PathVariable("source1") String source1,
-                              @RequestParam(value = "permissionId", required = false) String permissionId,
-                              @RequestParam(value = "resourceType", required = false) String resourceType) {
-    return opsmxPlatformService.getPlatformResponse8(version, type, source, source1, permissionId, resourceType)
+                              @PathVariable("source1") String source1) {
+    return opsmxPlatformService.getPlatformResponse8(version, type, source, source1)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
