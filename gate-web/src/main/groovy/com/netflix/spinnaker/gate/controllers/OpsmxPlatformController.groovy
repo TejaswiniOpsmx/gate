@@ -118,10 +118,12 @@ class OpsmxPlatformController {
 
     return opsmxPlatformService.getPlatformResponse7(version, type, source, source1, source2, source3, source4)
   }
-
+  
+  datasource/plugins/{pluginName}/image
+  
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/image", method = RequestMethod.GET)
-  ResponseEntity<byte[]> getPlatformResponse8(@PathVariable("version") String version,
+  byte[] getPlatformResponse8(@PathVariable("version") String version,
                               @PathVariable("type") String type,
                               @PathVariable("source") String source,
                               @PathVariable("source1") String source1) {
