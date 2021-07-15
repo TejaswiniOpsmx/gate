@@ -18,7 +18,6 @@ package com.netflix.spinnaker.gate.services.internal
 
 
 import retrofit.http.*
-import java.lang.reflect.Array
 
 interface OpsmxPlatformService {
 
@@ -56,7 +55,7 @@ interface OpsmxPlatformService {
 
 
   @GET("/platformservice/{version}/datasource/plugins/{pluginName}/image")
-  Array getPlatformResponse8(@Path('version') String version,
+  String getPlatformResponse8(@Path('version') String version,
                               @Path('pluginName') String pluginName)
 
 

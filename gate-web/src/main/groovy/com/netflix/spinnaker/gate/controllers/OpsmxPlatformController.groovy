@@ -24,7 +24,6 @@ import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
-import java.lang.reflect.Array
 
 @RequestMapping("/platformservice")
 @RestController
@@ -122,7 +121,7 @@ class OpsmxPlatformController {
 
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/datasource/plugins/{pluginName}/image", method = RequestMethod.GET, produces = "image/png")
-  Array getPlatformResponse8(@PathVariable("version") String version,
+  String getPlatformResponse8(@PathVariable("version") String version,
                               @PathVariable("pluginName") String pluginName) {
     return opsmxPlatformService.getPlatformResponse8(version, pluginName)
   }
