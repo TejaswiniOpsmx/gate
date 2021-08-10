@@ -121,6 +121,9 @@ class AuthConfig {
         .antMatchers(HttpMethod.POST, '/notifications/callbacks/**').permitAll()
         .antMatchers(HttpMethod.POST, '/managed/notifications/callbacks/**').permitAll()
         .antMatchers('/health').permitAll()
+        .antMatchers('/prometheus').permitAll()
+        .antMatchers('/info').permitAll()
+        .antMatchers('/metrics').permitAll()
         .antMatchers('/**').authenticated()
 
     if (fiatSessionFilterEnabled) {
@@ -183,6 +186,9 @@ class AuthConfig {
       .antMatchers(HttpMethod.POST, '/webhooks/**').permitAll()
       .antMatchers(HttpMethod.POST, '/notifications/callbacks/**').permitAll()
       .antMatchers('/health').permitAll()
+      .antMatchers('/prometheus').permitAll()
+      .antMatchers('/info').permitAll()
+      .antMatchers('/metrics').permitAll()
       .anyRequest().authenticated()
      http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
   }
