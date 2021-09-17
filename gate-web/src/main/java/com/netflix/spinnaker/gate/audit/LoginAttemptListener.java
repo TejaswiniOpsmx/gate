@@ -29,15 +29,19 @@ public class LoginAttemptListener {
 
   @EventListener
   public void listen(AuditApplicationEvent auditApplicationEvent) {
-    AuditEvent auditEvent = auditApplicationEvent.getAuditEvent();
+    try {
+      AuditEvent auditEvent = auditApplicationEvent.getAuditEvent();
 
-    log.info("Principal " + auditEvent.getPrincipal() + " - " + auditEvent.getType());
+      log.info("Principal " + auditEvent.getPrincipal() + " - " + auditEvent.getType());
 
-    WebAuthenticationDetails details =
-        (WebAuthenticationDetails) auditEvent.getData().get("details");
+      WebAuthenticationDetails details =
+          (WebAuthenticationDetails) auditEvent.getData().get("details");
 
-    log.info("  Remote IP address: " + details.getRemoteAddress());
-    log.info("  Session Id: " + details.getSessionId());
-    log.info("  Request URL: " + auditEvent.getData().get("requestUrl"));
+      log.info("  Remote IP address: " + details.getRemoteAddress());
+      log.info("  Session Id: " + details.getSessionId());
+      log.info("  Request URL: " + auditEvent.getData().get("requestUrl"));
+    } catch (Exception e) {
+      log.error("Exception occured : {}", e);
+    }
   }
 }
