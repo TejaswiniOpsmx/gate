@@ -4,5 +4,7 @@ dependencies {
   implementation "io.spinnaker.kork:kork-security"
   implementation "org.apache.commons:commons-lang3"
   implementation "org.springframework.session:spring-session-core"
+  // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.4.5'
 
 }
