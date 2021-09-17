@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.opsmx.spinnaker.gate.security.audit;
+package com.netflix.spinnaker.gate.audit;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.audit.AuditEvent;
