@@ -16,17 +16,27 @@
 
 package com.netflix.spinnaker.gate.audit;
 
-// @Slf4j
-// @Component
-public class AuditListener /*extends AbstractAuditListener */ {
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.actuate.security.AbstractAuthenticationAuditListener;
+import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
+import org.springframework.stereotype.Component;
 
-  //  @Override
-  //  protected void onAuditEvent(AuditEvent event) {
-  //    log.info(
-  //        "On audit event: timestamp: {}, principal: {}, type: {}, data: {}",
-  //        event.getTimestamp(),
-  //        event.getPrincipal(),
-  //        event.getType(),
-  //        event.getData());
-  //  }
+@Slf4j
+@Component
+public class AuditListener extends AbstractAuthenticationAuditListener {
+
+  //    @Override
+  //    protected void onAuditEvent(AuditEvent event) {
+  //      log.info(
+  //          "On audit event: timestamp: {}, principal: {}, type: {}, data: {}",
+  //          event.getTimestamp(),
+  //          event.getPrincipal(),
+  //          event.getType(),
+  //          event.getData());
+  //    }
+
+  @Override
+  public void onApplicationEvent(AbstractAuthenticationEvent event) {
+    log.info("event received in  AuditListener : {}", event.getAuthentication());
+  }
 }
