@@ -1,6 +1,6 @@
 Spinnaker Gateway Service   
 ------------------------------------
-[![Build Status](https://api.travis-ci.org/spinnaker/gate.svg?branch=master)](https://travis-ci.org/spinnaker/gate)
+[![Build Status](https://api.travis-ci.org/spinnaker/gate.svg?branch=master)](https://travis-ci.org/spinnaker/gate)...
 
 This service provides the Spinnaker REST API, servicing scripting clients as well as all actions from [Deck](https://github.com/spinnaker/deck).
 The REST API fronts the following services:
