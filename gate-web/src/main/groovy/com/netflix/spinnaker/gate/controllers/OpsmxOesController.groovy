@@ -329,7 +329,7 @@ class OpsmxOesController {
 
       def response = okHttpClient.newCall(request).execute()
       return response
-    }.call() as Response
+    }.call() as okhttp3.Response
 
     if (!obj.isSuccessful()) {
       throw OesRequestException(response.body().string())
@@ -356,7 +356,7 @@ class OpsmxOesController {
 
 		def response = okHttpClient.newCall(request).execute()
       return response
-	  }.call() as Response
+	  }.call() as okhttp3.Response
 
     if (!obj.isSuccessful()) {
       throw OesRequestException(response.body().string())
