@@ -28,6 +28,7 @@ import java.util.stream.Collectors
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.AuthenticatedRequest
+import com.netflix.spinnaker.gate.exceptions.OesRequestException
 
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
@@ -319,7 +320,7 @@ class OpsmxOesController {
       else
         headersMap.putAt(key,"")
     }
-    AuthenticatedRequest.propagate {
+    def obj =  AuthenticatedRequest.propagate {
       def request = new Request.Builder()
         .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/spinnakerX509")
         .headers(Headers.of(headersMap))
@@ -327,8 +328,16 @@ class OpsmxOesController {
         .build()
 
       def response = okHttpClient.newCall(request).execute()
-      return response.body()?.string() ?: "Unknown reason: " + response.code()
-    }.call() as Object
+      return response
+    }.call() as okhttp3.Response
+
+    if (!obj.isSuccessful()) {
+      def error = obj.body().string();
+      log.error("Failed to setup the Spinnaker : {}", error)
+      throw new OesRequestException(error)
+    } else{
+      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
+    }
   }
 
   private Object createOrUpdateSpinnaker(MultipartFile files, String data, String version) {
@@ -340,7 +349,7 @@ class OpsmxOesController {
 		else
 		  headersMap.putAt(key,"")
 	  }
-	  AuthenticatedRequest.propagate {
+	  def obj = AuthenticatedRequest.propagate {
 		def request = new Request.Builder()
 		  .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/version/spinnakerX509".replace("version", version))
 		  .headers(Headers.of(headersMap))
@@ -348,8 +357,17 @@ class OpsmxOesController {
 		  .build()
 
 		def response = okHttpClient.newCall(request).execute()
-		return response.body()?.string() ?: "Unknown reason: " + response.code()
-	  }.call() as Object
+      return response
+	  }.call() as okhttp3.Response
+
+    if (!obj.isSuccessful()) {
+      def error = obj.body().string();
+      log.error("Failed to setup the Spinnaker : {}", error)
+      throw new OesRequestException(error)
+    } else{
+      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
+    }
+
 	}
 
   private String addOrUpdateCloudProverAccount(MultipartFile files, String data) {
