@@ -28,6 +28,7 @@ import java.util.stream.Collectors
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.AuthenticatedRequest
+import com.netflix.spinnaker.gate.exceptions.OesRequestException
 
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
@@ -319,7 +320,7 @@ class OpsmxOesController {
       else
         headersMap.putAt(key,"")
     }
-    AuthenticatedRequest.propagate {
+    def obj =  AuthenticatedRequest.propagate {
       def request = new Request.Builder()
         .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/spinnakerX509")
         .headers(Headers.of(headersMap))
@@ -327,13 +328,14 @@ class OpsmxOesController {
         .build()
 
       def response = okHttpClient.newCall(request).execute()
-
-      if(response.body() == null || response.body().string() == null) {
-        reponse = "Unknown reason: " + response.code()
-      }
-
       return response
-    }.call() as Object
+    }.call() as Response
+
+    if (!obj.isSuccessful()) {
+      throw OesRequestException(response.body().string())
+    } else{
+      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
+    }
   }
 
   private Object createOrUpdateSpinnaker(MultipartFile files, String data, String version) {
@@ -345,7 +347,7 @@ class OpsmxOesController {
 		else
 		  headersMap.putAt(key,"")
 	  }
-	  AuthenticatedRequest.propagate {
+	  def obj = AuthenticatedRequest.propagate {
 		def request = new Request.Builder()
 		  .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/version/spinnakerX509".replace("version", version))
 		  .headers(Headers.of(headersMap))
@@ -353,12 +355,15 @@ class OpsmxOesController {
 		  .build()
 
 		def response = okHttpClient.newCall(request).execute()
-    if(response.body() == null || response.body().string() == null) {
-      reponse = "Unknown reason: " + response.code()
+      return response
+	  }.call() as Response
+
+    if (!obj.isSuccessful()) {
+      throw OesRequestException(response.body().string())
+    } else{
+      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
 
-      return response
-	  }.call() as Object
 	}
 
   private String addOrUpdateCloudProverAccount(MultipartFile files, String data) {
