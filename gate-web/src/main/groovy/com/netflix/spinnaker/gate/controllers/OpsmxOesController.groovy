@@ -327,8 +327,12 @@ class OpsmxOesController {
         .build()
 
       def response = okHttpClient.newCall(request).execute()
-      log.info("/oes/accountsConfig/spinnakerX509 response code: " + response.code() )
-      return response.body()?.string() ?: "Unknown reason: " + response.code()
+
+      if(response.body() == null || response.body().string() == null) {
+        reponse = "Unknown reason: " + response.code()
+      }
+
+      return response
     }.call() as Object
   }
 
