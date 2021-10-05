@@ -332,7 +332,7 @@ class OpsmxOesController {
     }.call() as okhttp3.Response
 
     if (!obj.isSuccessful()) {
-      throw OesRequestException(response.body().string())
+      throw OesRequestException(obj.body().string())
     } else{
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
@@ -359,7 +359,7 @@ class OpsmxOesController {
 	  }.call() as okhttp3.Response
 
     if (!obj.isSuccessful()) {
-      throw OesRequestException(response.body().string())
+      throw OesRequestException(obj.body().string())
     } else{
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
