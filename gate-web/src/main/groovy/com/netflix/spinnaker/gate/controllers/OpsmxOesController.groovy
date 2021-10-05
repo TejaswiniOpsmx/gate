@@ -355,8 +355,8 @@ class OpsmxOesController {
 		  .build()
 
 		def response = okHttpClient.newCall(request).execute()
-      logger.info("The response code: " + response.code())
-      logger.info("The response body: " + response.body().string())
+//      logger.info("The response code: " + response.code())
+//      logger.info("The response body: " + response.body().string())
       if(response.body() == null || response.body().string() == null) {
         reponse = "Unknown reason: " + response.code()
       }
