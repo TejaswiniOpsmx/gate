@@ -332,7 +332,9 @@ class OpsmxOesController {
     }.call() as okhttp3.Response
 
     if (!obj.isSuccessful()) {
-      throw new OesRequestException(obj.body().string())
+      def error = obj.body().string();
+      log.error("Failed to setup the Spinnaker : {}", error)
+      throw new OesRequestException(error)
     } else{
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
@@ -359,7 +361,9 @@ class OpsmxOesController {
 	  }.call() as okhttp3.Response
 
     if (!obj.isSuccessful()) {
-      throw new OesRequestException(obj.body().string())
+      def error = obj.body().string();
+      log.error("Failed to setup the Spinnaker : {}", error)
+      throw new OesRequestException(error)
     } else{
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
