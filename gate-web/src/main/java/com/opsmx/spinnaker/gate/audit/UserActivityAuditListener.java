@@ -44,7 +44,8 @@ public class UserActivityAuditListener implements ApplicationListener {
           log.info("base url : {}", baseUrl);
           if (isOesActivity(baseUrl)) {
             log.info("publishing the event to audit service");
-            auditHandler.publishEvent(AuditEventType.USER_ACTIVITY_AUDIT, event);
+            auditHandler.publishEvent(
+                AuditEventType.USER_ACTIVITY_AUDIT, servletRequestHandledEvent);
           }
         }
       }
