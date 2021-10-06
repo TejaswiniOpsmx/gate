@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package com.opsmx.spinnaker.gate.audit;
+package com.opsmx.spinnaker.gate.enums;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
+public enum OesServices {
+  dashboardservice("dashboardservice"),
+  platformservice("platformservice"),
+  oes("oes"),
+  autopilot("autopilot"),
+  visibilityservice("visibilityservice"),
+  auditclientservice("auditclientservice");
 
-@Slf4j
-@Component
-public class UserActivityListener implements ApplicationListener {
+  public String description;
 
-  @Override
-  public void onApplicationEvent(ApplicationEvent event) {
-    log.info("event : {}", event);
+  public String getDescription() {
+    return this.description;
+  }
+
+  OesServices(String description) {
+    this.description = description;
   }
 }
