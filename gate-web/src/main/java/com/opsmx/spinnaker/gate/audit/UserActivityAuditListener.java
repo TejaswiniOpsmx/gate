@@ -108,7 +108,6 @@ public class UserActivityAuditListener implements ApplicationListener {
     auditData.put("clientAddress", servletRequestHandledEvent.getClientAddress());
     auditData.put("shortDescription", servletRequestHandledEvent.getShortDescription());
     auditData.put("statusCode", servletRequestHandledEvent.getStatusCode());
-    auditData.put("source", servletRequestHandledEvent.getSource());
     auditData.put("failureCase", servletRequestHandledEvent.getFailureCause());
     auditData.put("processingTimeMillis", servletRequestHandledEvent.getProcessingTimeMillis());
     auditData.put("sessionId", servletRequestHandledEvent.getSessionId());
