@@ -33,18 +33,22 @@ public class UserActivityAuditListener implements ApplicationListener {
 
   @Override
   public void onApplicationEvent(ApplicationEvent event) {
-
-    log.info("event received ");
-    if (event instanceof ServletRequestHandledEvent) {
-      ServletRequestHandledEvent servletRequestHandledEvent = (ServletRequestHandledEvent) event;
-      if (isAuthenticatedRequest(servletRequestHandledEvent)) {
-        log.info("request is authenticated");
-        String baseUrl = getBaseUrl(servletRequestHandledEvent.getRequestUrl());
-        if (isOesActivity(baseUrl)) {
-          log.info("publishing the event to audit service");
-          auditHandler.publishEvent(AuditEventType.USER_ACTIVITY_AUDIT, event);
+    try {
+      log.info("event received ");
+      if (event instanceof ServletRequestHandledEvent) {
+        ServletRequestHandledEvent servletRequestHandledEvent = (ServletRequestHandledEvent) event;
+        if (isAuthenticatedRequest(servletRequestHandledEvent)) {
+          log.info("request is authenticated");
+          String baseUrl = getBaseUrl(servletRequestHandledEvent.getRequestUrl());
+          log.info("base url : {}", baseUrl);
+          if (isOesActivity(baseUrl)) {
+            log.info("publishing the event to audit service");
+            auditHandler.publishEvent(AuditEventType.USER_ACTIVITY_AUDIT, event);
+          }
         }
       }
+    } catch (Exception e) {
+      log.error("Exception occured : {}", e);
     }
   }
 
