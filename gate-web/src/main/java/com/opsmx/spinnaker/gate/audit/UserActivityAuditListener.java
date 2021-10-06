@@ -18,6 +18,8 @@ package com.opsmx.spinnaker.gate.audit;
 
 import com.opsmx.spinnaker.gate.enums.AuditEventType;
 import com.opsmx.spinnaker.gate.enums.OesServices;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -44,8 +46,8 @@ public class UserActivityAuditListener implements ApplicationListener {
           log.info("base url : {}", baseUrl);
           if (isOesActivity(baseUrl)) {
             log.info("publishing the event to audit service");
-            auditHandler.publishEvent(
-                AuditEventType.USER_ACTIVITY_AUDIT, servletRequestHandledEvent);
+            Map<String, Object> auditData = populateAuditData(servletRequestHandledEvent);
+            auditHandler.publishEvent(AuditEventType.USER_ACTIVITY_AUDIT, auditData);
           }
         }
       }
@@ -93,5 +95,24 @@ public class UserActivityAuditListener implements ApplicationListener {
       flag = Boolean.TRUE;
     }
     return flag;
+  }
+
+  private Map<String, Object> populateAuditData(
+      ServletRequestHandledEvent servletRequestHandledEvent) {
+    Map<String, Object> auditData = new HashMap<>();
+    auditData.put("baseUrl", servletRequestHandledEvent.getRequestUrl());
+    auditData.put("description", servletRequestHandledEvent.getDescription());
+    auditData.put("method", servletRequestHandledEvent.getMethod());
+    auditData.put("servletName", servletRequestHandledEvent.getServletName());
+    auditData.put("userName", servletRequestHandledEvent.getUserName());
+    auditData.put("clientAddress", servletRequestHandledEvent.getClientAddress());
+    auditData.put("shortDescription", servletRequestHandledEvent.getShortDescription());
+    auditData.put("statusCode", servletRequestHandledEvent.getStatusCode());
+    auditData.put("source", servletRequestHandledEvent.getSource());
+    auditData.put("failureCase", servletRequestHandledEvent.getFailureCause());
+    auditData.put("processingTimeMillis", servletRequestHandledEvent.getProcessingTimeMillis());
+    auditData.put("sessionId", servletRequestHandledEvent.getSessionId());
+    auditData.put("timestamp", servletRequestHandledEvent.getTimestamp());
+    return auditData;
   }
 }
