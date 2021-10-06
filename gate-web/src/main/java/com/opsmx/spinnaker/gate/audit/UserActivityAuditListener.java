@@ -33,37 +33,38 @@ public class UserActivityAuditListener implements ApplicationListener {
 
   @Override
   public void onApplicationEvent(ApplicationEvent event) {
-    try {
-      log.info("event received ");
-      if (event instanceof ServletRequestHandledEvent) {
-        ServletRequestHandledEvent servletRequestHandledEvent = (ServletRequestHandledEvent) event;
-        if (isAuthenticatedRequest(servletRequestHandledEvent)) {
-          log.info("request is authenticated");
-          String baseUrl = getBaseUrl(servletRequestHandledEvent.getRequestUrl());
-          log.info("base url : {}", baseUrl);
-          if (isOesActivity(baseUrl)) {
-            log.info("publishing the event to audit service");
-            auditHandler.publishEvent(AuditEventType.USER_ACTIVITY_AUDIT, event);
-          }
+
+    log.info("event received ");
+    if (event instanceof ServletRequestHandledEvent) {
+      ServletRequestHandledEvent servletRequestHandledEvent = (ServletRequestHandledEvent) event;
+      if (isAuthenticatedRequest(servletRequestHandledEvent)) {
+        log.info("request is authenticated");
+        String baseUrl = getBaseUrl(servletRequestHandledEvent.getRequestUrl());
+        log.info("base url : {}", baseUrl);
+        if (isOesActivity(baseUrl)) {
+          log.info("publishing the event to audit service");
+          auditHandler.publishEvent(AuditEventType.USER_ACTIVITY_AUDIT, event);
         }
       }
-    } catch (Exception e) {
-      log.error("Exception occured : {}", e);
     }
   }
 
   private boolean isOesActivity(String baseUrl) {
 
     boolean flag = Boolean.FALSE;
-    switch (OesServices.valueOf(baseUrl)) {
-      case oes:
-      case autopilot:
-      case platformservice:
-      case dashboardservice:
-      case visibilityservice:
-      case auditclientservice:
-        flag = Boolean.TRUE;
-        break;
+    try {
+      switch (OesServices.valueOf(baseUrl)) {
+        case oes:
+        case autopilot:
+        case platformservice:
+        case dashboardservice:
+        case visibilityservice:
+        case auditclientservice:
+          flag = Boolean.TRUE;
+          break;
+      }
+    } catch (Exception e) {
+      log.info("Not oes event : {}", e);
     }
     return flag;
   }
