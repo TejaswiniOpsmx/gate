@@ -37,16 +37,16 @@ public class UserActivityAuditListener implements ApplicationListener {
   public void onApplicationEvent(ApplicationEvent event) {
 
     try {
-      log.info("event received ");
+      log.debug("event received ");
       if (event instanceof ServletRequestHandledEvent) {
         ServletRequestHandledEvent servletRequestHandledEvent = (ServletRequestHandledEvent) event;
         if (isAuthenticatedRequest(servletRequestHandledEvent)) {
-          log.info("request is authenticated");
+          log.debug("request is authenticated");
           String baseUrl = getBaseUrl(servletRequestHandledEvent.getRequestUrl());
-          log.info("base url : {}", baseUrl);
+          log.debug("base url : {}", baseUrl);
           if (isOesActivity(baseUrl)) {
-            log.info("publishing the event to audit service");
             Map<String, Object> auditData = populateAuditData(servletRequestHandledEvent);
+            log.debug("publishing the event to audit service : {}", auditData);
             auditHandler.publishEvent(AuditEventType.USER_ACTIVITY_AUDIT, auditData);
           }
         }
@@ -71,7 +71,7 @@ public class UserActivityAuditListener implements ApplicationListener {
           break;
       }
     } catch (Exception e) {
-      log.info("Not oes event : {}", e);
+      log.debug("Not oes event : {}", e.getMessage());
     }
     return flag;
   }
