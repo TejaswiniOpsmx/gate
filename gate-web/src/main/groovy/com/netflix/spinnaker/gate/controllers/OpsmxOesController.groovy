@@ -299,16 +299,23 @@ class OpsmxOesController {
       else
         headersMap.putAt(key,"")
     }
-    AuthenticatedRequest.propagate {
+   def obj = AuthenticatedRequest.propagate {
       def request = new Request.Builder()
         .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/spinnaker/addOrUpdateCloudProviderAccount")
         .headers(Headers.of(headersMap))
         .post(uploadFileOkHttp(data,files))
         .build()
 
-      def response = okHttpClient.newCall(request).execute()
-      return response.body()?.string() ?: "Unknown reason: " + response.code()
-    }.call() as String
+      def response = okHttpClient.newCall(request).execute()	  
+	  return response     
+    }.call() as okhttp3.Response
+	if (!obj.isSuccessful()) {
+		def error = obj.body().string();		
+		throw new OesRequestException(error)
+	  } else{
+		return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
+	  }
+	
   }
 
   Object addOrUpdateSpinnaker(MultipartFile files, String data) {
