@@ -52,7 +52,14 @@ class OpsmxSaporPolicyController {
   @PostMapping(value = "{version}/staticPolicy/eval", consumes = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody Object evaluateStaticPolicy(@PathVariable("version") String version,
                      @RequestBody(required = false) Object data) {
-    Response response = opsmxOesService.evaluateStaticPolicy(version, data)
+    Response response = null
+    try {
+      log.info("request received to evaluateStaticPolicy")
+      response = opsmxOesService.evaluateStaticPolicy(version, data)
+      log.info("Execution completed")
+    }catch(Exception e){
+      log.error("Exception occured : {}", e)
+    }
     return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(response.getStatus()))
   }
 
