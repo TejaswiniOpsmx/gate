@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseBody
 import retrofit.RetrofitError
 
 @Slf4j
@@ -29,7 +30,7 @@ import retrofit.RetrofitError
 class RetrofitErrorHandler {
 
   @ExceptionHandler([RetrofitError.class])
-  ResponseEntity<Object> handleRetrofitError(RetrofitError retrofitError){
+  @ResponseBody Object handleRetrofitError(RetrofitError retrofitError){
     log.info("Handling the retrofit error : {}", retrofitError.getMessage())
     return new ResponseEntity<Object>(retrofitError.getBody(), HttpStatus.valueOf(retrofitError.getResponse().getStatus()))
   }
