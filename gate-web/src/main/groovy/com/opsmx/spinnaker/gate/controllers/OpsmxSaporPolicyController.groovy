@@ -53,8 +53,8 @@ class OpsmxSaporPolicyController {
   @ResponseBody Object evaluateStaticPolicy(@PathVariable("version") String version,
                      @RequestBody(required = false) Object data) {
 
-    Response response = opsmxOesService.evaluateStaticPolicy(version, data)
-    return new ResponseEntity(response.getBody(), HttpStatus.valueOf(response.getStatus()))
+    return opsmxOesService.evaluateStaticPolicy(version, data)
+    //return new ResponseEntity(response.getBody(), HttpStatus.valueOf(response.getStatus()))
   }
 
 
