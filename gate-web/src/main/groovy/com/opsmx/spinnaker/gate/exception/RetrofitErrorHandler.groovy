@@ -28,7 +28,7 @@ import retrofit.RetrofitError
 @ControllerAdvice(basePackageClasses = OpsmxSaporPolicyController.class)
 class RetrofitErrorHandler {
 
-  @ExceptionHandler({ RetrofitError.class})
+  @ExceptionHandler([RetrofitError.class])
   ResponseEntity<Object> handleRetrofitError(RetrofitError retrofitError){
     log.info("Handling the retrofit error : {}", retrofitError.getMessage())
     return new ResponseEntity<Object>(retrofitError.getBody(), HttpStatus.valueOf(retrofitError.getResponse().getStatus()))
