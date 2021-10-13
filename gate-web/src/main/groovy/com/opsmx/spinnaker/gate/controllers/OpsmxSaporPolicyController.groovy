@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import retrofit.RetrofitError
 import retrofit.client.Response
 
 @Slf4j
@@ -44,23 +45,21 @@ class OpsmxSaporPolicyController {
   @ResponseBody Object evaluateRuntimePolicy(@PathVariable("version") String version,
                                              @RequestBody(required = false) Object data) {
 
-    Response response = opsmxOesService.evaluateRuntimePolicy(version, data)
-    return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(response.getStatus()))
+    return opsmxOesService.evaluateRuntimePolicy(version, data)
   }
 
   @ApiOperation(value = "Endpoint for sapor static policy evaluation rest services")
   @PostMapping(value = "{version}/staticPolicy/eval", consumes = MediaType.APPLICATION_JSON_VALUE)
   @ResponseBody Object evaluateStaticPolicy(@PathVariable("version") String version,
                      @RequestBody(required = false) Object data) {
-    Response response = null
+
     try {
       log.info("request received to evaluateStaticPolicy")
-      response = opsmxOesService.evaluateStaticPolicy(version, data)
-      log.info("Execution completed")
-    }catch(Exception e){
-      log.error("Exception occured : {}", e)
+      return opsmxOesService.evaluateStaticPolicy(version, data)
+    }catch(RetrofitError retrofitError){
+      log.error("Exception occured : {}", retrofitError)
+      return new ResponseEntity<>(retrofitError.getBody(), HttpStatus.valueOf(retrofitError.getResponse().getStatus()))
     }
-    return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(response.getStatus()))
   }
 
 
