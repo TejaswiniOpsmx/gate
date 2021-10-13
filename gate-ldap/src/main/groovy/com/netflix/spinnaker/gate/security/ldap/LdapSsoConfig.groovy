@@ -127,6 +127,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session"))
     {
       defaultCookieSerializer.setSameSite("None; Secure")
+      defaultCookieSerializer.setUseHttpOnlyCookie(false)
       http.formLogin()
       authConfig.configure(http)
       http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
