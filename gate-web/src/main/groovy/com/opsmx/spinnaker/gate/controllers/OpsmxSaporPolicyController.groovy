@@ -16,6 +16,7 @@
 
 package com.opsmx.spinnaker.gate.controllers
 
+import com.google.gson.JsonObject
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
@@ -53,8 +54,8 @@ class OpsmxSaporPolicyController {
   @ResponseBody Object evaluateStaticPolicy(@PathVariable("version") String version,
                      @RequestBody(required = false) Object data) {
 
-    return opsmxOesService.evaluateStaticPolicy(version, data)
-    //return new ResponseEntity(response.getBody(), HttpStatus.valueOf(response.getStatus()))
+    Response response = opsmxOesService.evaluateStaticPolicy(version, data)
+    return new ResponseEntity(response.getBody().asType(Map.class), HttpStatus.valueOf(response.getStatus()))
   }
 
 
