@@ -160,7 +160,7 @@ interface OpsmxOesService {
                                @Body Object data)
 
   @POST("/{version}/staticPolicy/eval")
-  Response evaluateStaticPolicy(@Path('version') String version,
+  Object evaluateStaticPolicy(@Path('version') String version,
                               @Body Object data)
 
 }

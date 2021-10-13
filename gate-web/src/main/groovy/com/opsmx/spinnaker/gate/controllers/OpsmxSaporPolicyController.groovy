@@ -16,22 +16,16 @@
 
 package com.opsmx.spinnaker.gate.controllers
 
-import com.google.gson.JsonObject
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
-import retrofit.RetrofitError
-import retrofit.client.Response
 
 @Slf4j
 @RestController
@@ -43,7 +37,7 @@ class OpsmxSaporPolicyController {
 
   @ApiOperation(value = "Endpoint for sapor runtime policy evaluation rest services")
   @PostMapping(value = "{version}/data/**", consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody Object evaluateRuntimePolicy(@PathVariable("version") String version,
+  Object evaluateRuntimePolicy(@PathVariable("version") String version,
                                              @RequestBody(required = false) Object data) {
 
     return opsmxOesService.evaluateRuntimePolicy(version, data)
@@ -51,11 +45,10 @@ class OpsmxSaporPolicyController {
 
   @ApiOperation(value = "Endpoint for sapor static policy evaluation rest services")
   @PostMapping(value = "{version}/staticPolicy/eval", consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody Object evaluateStaticPolicy(@PathVariable("version") String version,
+  Object evaluateStaticPolicy(@PathVariable("version") String version,
                      @RequestBody(required = false) Object data) {
 
-    Response response = opsmxOesService.evaluateStaticPolicy(version, data)
-    return new ResponseEntity(response.getBody().asType(Map.class), HttpStatus.valueOf(response.getStatus()))
+    return opsmxOesService.evaluateStaticPolicy(version, data)
   }
 
 
