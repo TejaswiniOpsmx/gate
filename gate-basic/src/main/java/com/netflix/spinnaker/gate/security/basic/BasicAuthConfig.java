@@ -55,7 +55,8 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    defaultCookieSerializer.setSameSite(null);
+    defaultCookieSerializer.setSameSite("None");
+    defaultCookieSerializer.setUseSecureCookie(true);
     http.formLogin()
         .and()
         .httpBasic()
