@@ -32,6 +32,6 @@ class RetrofitErrorHandler {
   @ExceptionHandler([RetrofitError.class])
   @ResponseBody Object handleRetrofitError(RetrofitError retrofitError){
     log.info("Handling the retrofit error : {}", retrofitError.getMessage())
-    return new ResponseEntity<Object>(retrofitError.getBody(), HttpStatus.valueOf(retrofitError.getResponse().getStatus()))
+    return new ResponseEntity<>(retrofitError.getBody(), HttpStatus.valueOf(retrofitError.getResponse().getStatus()))
   }
 }
