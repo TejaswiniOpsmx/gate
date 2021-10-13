@@ -139,7 +139,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   @Override
   void configure(HttpSecurity http) {
     //We need our session cookie to come across when we get redirected back from the IdP:
-    defaultCookieSerializer.setSameSite(null)
+    defaultCookieSerializer.setSameSite("None")
+    defaultCookieSerializer.setUseSecureCookie(true)
     defaultCookieSerializer.setCookieName("gateCookie")
     authConfig.configure(http)
 
