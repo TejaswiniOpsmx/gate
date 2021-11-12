@@ -367,7 +367,7 @@ class OpsmxOesController {
     }
   }
 
-  private String addOrUpdateCloudProverAccount(MultipartFile files, String data) {
+  private Object addOrUpdateCloudProverAccount(MultipartFile files, String data) {
     Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
     Map headersMap = new HashMap()
     authenticationHeaders.each { key, val ->
@@ -388,7 +388,7 @@ class OpsmxOesController {
     }.call() as String
   }
 
-  private String addOrUpdateDynamicAccount(MultipartFile files, String data) {
+  private Object addOrUpdateDynamicAccount(MultipartFile files, String data) {
 
 	  Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
 	  Map headersMap = new HashMap()
