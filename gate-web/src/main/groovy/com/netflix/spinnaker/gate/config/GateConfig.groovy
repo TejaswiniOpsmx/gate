@@ -99,6 +99,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
   @Value('${server.session.timeout-in-seconds:3600}')
   void setSessionTimeout(int maxInactiveIntervalInSeconds) {
+    log.info("maxInactiveIntervalInSeconds is : " + maxInactiveIntervalInSeconds)
     super.setMaxInactiveIntervalInSeconds(maxInactiveIntervalInSeconds)
   }
 
