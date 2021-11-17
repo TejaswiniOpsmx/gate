@@ -158,6 +158,9 @@ class AuthConfig {
         .and()
       .csrf()
         .disable()
+
+    http.sessionManagement().maximumSessions(1)
+      .expiredUrl("/auth/logout");
     // @formatter:on
   }
 
