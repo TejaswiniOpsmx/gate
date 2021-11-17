@@ -88,7 +88,7 @@ class AuthConfig {
   @Value('${security.webhooks.default-auth-enabled:false}')
   boolean webhookDefaultAuthEnabled
 
-  @Value('${saml.logout.url:/auth/logout}')
+  @Value('${saml.logoutUrl:/auth/logout}')
   String logoutUrl
 
   @Value('${server.session.expiredUrl:/auth/logout}')
