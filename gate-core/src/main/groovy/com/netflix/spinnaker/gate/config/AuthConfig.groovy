@@ -165,17 +165,15 @@ class AuthConfig {
       .csrf()
         .disable()
 
+    // Session Management
     http.sessionManagement({ sessionManagement ->
       sessionManagement
         .sessionConcurrency({ sessionConcurrency ->
           sessionConcurrency
             .expiredUrl(sessionExpireUrl)
-        }
-        )
-    }
-    )
-//    http.sessionManagement().maximumSessions(1)
-//      .expiredUrl("/auth/logout");
+        })
+    })
+
     // @formatter:on
   }
 
