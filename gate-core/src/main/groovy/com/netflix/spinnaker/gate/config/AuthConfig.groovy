@@ -89,10 +89,10 @@ class AuthConfig {
   boolean webhookDefaultAuthEnabled
 
   @Value('${saml.logout.url:/auth/logout}')
-  boolean logoutUrl
+  String logoutUrl
 
   @Value('${server.session.expiredUrl:/auth/logout}')
-  boolean sessionExpireUrl
+  String sessionExpireUrl
 
   void configure(HttpSecurity http) throws Exception {
     // @formatter:off
