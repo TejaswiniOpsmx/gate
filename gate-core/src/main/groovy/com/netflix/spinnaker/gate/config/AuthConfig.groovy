@@ -88,6 +88,12 @@ class AuthConfig {
   @Value('${security.webhooks.default-auth-enabled:false}')
   boolean webhookDefaultAuthEnabled
 
+  @Value('${saml.logout.url:/auth/logout}')
+  boolean logoutUrl
+
+  @Value('${server.session.expiredUrl:/auth/logout}')
+  boolean sessionExpireUrl
+
   void configure(HttpSecurity http) throws Exception {
     // @formatter:off
     http
@@ -152,15 +158,24 @@ class AuthConfig {
     }
 
     http.logout()
-        .logoutUrl("/auth/logout")
+        .logoutUrl(logoutUrl)
         .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
         .permitAll()
         .and()
       .csrf()
         .disable()
 
-    http.sessionManagement().maximumSessions(1)
-      .expiredUrl("/auth/logout");
+    http.sessionManagement({ sessionManagement ->
+      sessionManagement
+        .sessionConcurrency({ sessionConcurrency ->
+          sessionConcurrency
+            .expiredUrl(sessionExpireUrl)
+        }
+        )
+    }
+    )
+//    http.sessionManagement().maximumSessions(1)
+//      .expiredUrl("/auth/logout");
     // @formatter:on
   }
 
