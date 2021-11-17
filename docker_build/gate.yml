@@ -77,7 +77,7 @@ saml:
   redirectHostname: ${saml.redirectHostname}
   redirectBasePath: /
   issuerId: ${saml.issuerId}
-  logoutUrl: /auth/logout
+  sloUrl: /auth/logout
 google: {}
 logging:
   level:
@@ -91,7 +91,6 @@ redis:
 server:
   session:
     timeout-in-seconds: 7200
-    expiredUrl: /auth/logout
   tomcat:
     protocolHeader: X-Forwarded-Proto
     remoteIpHeader: X-Forwarded-For

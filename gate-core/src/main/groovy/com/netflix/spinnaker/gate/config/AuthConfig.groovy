@@ -85,14 +85,14 @@ class AuthConfig {
   @Value('${ldap.enabled:false}')
   boolean ldapEnabled
 
+  @Value('${saml.enabled:false}')
+  boolean samlEnabled
+
   @Value('${security.webhooks.default-auth-enabled:false}')
   boolean webhookDefaultAuthEnabled
 
-  @Value('${saml.logoutUrl:/auth/logout}')
-  String logoutUrl
-
-  @Value('${server.session.expiredUrl:/auth/logout}')
-  String sessionExpireUrl
+  @Value('${saml.sloUrl}')
+  String sloUrl
 
   void configure(HttpSecurity http) throws Exception {
     // @formatter:off
@@ -157,6 +157,13 @@ class AuthConfig {
       http.authorizeRequests().antMatchers(HttpMethod.POST, '/webhooks/**').authenticated()
     }
 
+    String logoutUrl = "/auth/logout"
+    if(samlEnabled && sloUrl !=null) {
+      logoutUrl = sloUrl
+    } else if (samlEnabled) {
+      log.warn("SLO url is nt configured so we might nt be able to logout properly")
+    }
+
     http.logout()
         .logoutUrl(logoutUrl)
         .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
@@ -170,7 +177,7 @@ class AuthConfig {
       sessionManagement
         .sessionConcurrency({ sessionConcurrency ->
           sessionConcurrency
-            .expiredUrl(sessionExpireUrl)
+            .expiredUrl(logoutUrl)
         })
     })
 
