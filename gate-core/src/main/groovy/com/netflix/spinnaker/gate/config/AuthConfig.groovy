@@ -173,13 +173,13 @@ class AuthConfig {
         .disable()
 
     // Session Management
-    http.sessionManagement({ sessionManagement ->
-      sessionManagement
-        .sessionConcurrency({ sessionConcurrency ->
-          sessionConcurrency
-            .expiredUrl(logoutUrl)
-        })
-    })
+//    http.sessionManagement({ sessionManagement ->
+//      sessionManagement
+//        .sessionConcurrency({ sessionConcurrency ->
+//          sessionConcurrency
+//            .expiredUrl(logoutUrl)
+//        })
+//    })
 
     // @formatter:on
   }
