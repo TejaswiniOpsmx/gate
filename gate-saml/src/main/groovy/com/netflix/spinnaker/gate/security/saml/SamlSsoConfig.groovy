@@ -93,6 +93,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     boolean forceLowercaseRoles = true
     UserAttributeMapping userAttributeMapping = new UserAttributeMapping()
     long maxAuthenticationAge = 7200
+    String sloUrl
 
     /**
      * Ensure that the keystore exists and can be accessed with the given keyStorePassword and keyStoreAliasName
@@ -168,6 +169,11 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           .keyPassword(samlSecurityConfigProperties.keyStorePassword)
 
       saml.init(http)
+    http
+      .logout()
+      .addLogoutHandler({ request, response, authentication ->
+        response.sendRedirect(samlSecurityConfigProperties.sloUrl);
+      });
 
     // @formatter:on
 
