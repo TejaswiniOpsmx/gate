@@ -160,17 +160,25 @@ class AuthConfig {
     String logoutUrl = "/auth/logout"
     if(samlEnabled && sloUrl !=null) {
       logoutUrl = sloUrl
+      http
+        .logout()
+        .logoutUrl(logoutUrl)
+        .addLogoutHandler({ request, response, authentication ->
+          response.sendRedirect(logoutUrl)
+        }).and().csrf().disable()
     } else if (samlEnabled) {
       log.warn("SLO url is nt configured so we might nt be able to logout properly")
-    }
-
-    http.logout()
+    } else {
+      http.logout()
         .logoutUrl(logoutUrl)
         .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
         .permitAll()
         .and()
-      .csrf()
+        .csrf()
         .disable()
+    }
+
+
 
     // Session Management
 //    http.sessionManagement({ sessionManagement ->
