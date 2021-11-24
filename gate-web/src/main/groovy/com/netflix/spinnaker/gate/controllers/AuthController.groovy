@@ -126,6 +126,12 @@ class AuthController {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Requested redirect address not recognized.")
   }
 
+  @ApiOperation(value = "logout")
+  @RequestMapping(value = "/logout", method = RequestMethod.GET)
+  void logout(HttpServletResponse response) {
+    response.sendRedirect("/saml/logout")
+  }
+
   boolean validDeckRedirect(String to) {
     URL toURL
     try {
