@@ -162,6 +162,8 @@ class AuthConfig {
       logoutSuccessHandler.setDefaultTargetUrl(sloUrl)
       http.logout()
         .logoutUrl("/auth/logout")
+        .invalidateHttpSession(false)
+//        .clearAuthentication(false)
         .logoutSuccessHandler(logoutSuccessHandler)
         .permitAll()
         .and()
