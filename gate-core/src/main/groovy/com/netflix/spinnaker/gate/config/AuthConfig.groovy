@@ -163,7 +163,7 @@ class AuthConfig {
       http.logout()
         .logoutUrl("/auth/logout")
         .invalidateHttpSession(false)
-//        .clearAuthentication(false)
+        .clearAuthentication(false)
         .logoutSuccessHandler(logoutSuccessHandler)
         .permitAll()
         .and()
