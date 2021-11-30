@@ -144,8 +144,7 @@ class AuthConfig {
 
 
     if (ldapEnabled) {
-      http.formLogin().loginPage("/login").loginProcessingUrl("/login")
-      .defaultSuccessUrl("/application", true).permitAll()
+      http.formLogin().loginPage("/login").permitAll()
     }
 
     if (webhookDefaultAuthEnabled) {

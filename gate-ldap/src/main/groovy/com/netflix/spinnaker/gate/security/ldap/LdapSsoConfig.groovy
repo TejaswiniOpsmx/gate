@@ -129,7 +129,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       defaultCookieSerializer.setSameSite(null)
       http.formLogin()
       authConfig.configure(http)
-      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
+//      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
     }
     else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
       authConfig.jwtconfigure(http)
