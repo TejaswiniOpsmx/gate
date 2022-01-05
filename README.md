@@ -1,4 +1,3 @@
-OP-2001
 Spinnaker Gateway Service   
 ------------------------------------
 [![Build Status](https://api.travis-ci.org/spinnaker/gate.svg?branch=master)](https://travis-ci.org/spinnaker/gate)
@@ -10,7 +9,7 @@ The REST API fronts the following services:
 * [Igor](https://github.com/spinnaker/igor)
 * [Orca](https://github.com/spinnaker/orca)
 
-### Modular builds
+### Modular builds      
 By default, Gate is built with all authentication providers included. To build only a subset of
 providers, use the `includeProviders` flag:
  ```
