@@ -21,23 +21,30 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@RequestMapping(value = "/oes")
 public class RbacController {
 
   private Gson gson = new Gson();
 
-  @PostMapping(value = "/oes/rbac", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/rbac", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> validate(
       @RequestBody String requestBody, HttpServletRequest request) {
 
     log.info("uri : {}", request.getRequestURI());
     log.info("actualUrl : {}", request.getHeader("actualUrl"));
     log.info("request body : {}", requestBody);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping(value = "/rbac", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> validateGet(HttpServletRequest request) {
+
+    log.info("uri : {}", request.getRequestURI());
+    log.info("actualUrl : {}", request.getHeader("actualUrl"));
     return ResponseEntity.ok().build();
   }
 }
