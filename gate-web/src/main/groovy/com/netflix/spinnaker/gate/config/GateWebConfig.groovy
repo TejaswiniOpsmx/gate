@@ -85,6 +85,7 @@ public class GateWebConfig implements WebMvcConfigurer {
 
     List<String> applicationRbacPathPatterns = new ArrayList<>()
     applicationRbacPathPatterns.add("/dashboardservice/v2/autopilot/service/feature/configuration")
+    applicationRbacPathPatterns.add("/dashboardservice/v2/users/{username}/applications/latest-canary")
     registry.addInterceptor(rbacInterceptor).addPathPatterns(applicationRbacPathPatterns)
   }
 
