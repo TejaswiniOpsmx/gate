@@ -41,7 +41,7 @@ public class RbacInterceptor implements HandlerInterceptor {
     log.info("username : {}", userName);
     try {
       ResponseEntity<Object> responseEntity =
-          oesAuthorizationService.authorizeUser(userName, "APP", "VIEW", userName);
+          oesAuthorizationService.authorizeUser(userName, "APP", "view", userName);
       log.info("response : {}", responseEntity.getBody());
     } catch (Exception e) {
       log.error("Exception occurred while authorizing the user : {}", e);
