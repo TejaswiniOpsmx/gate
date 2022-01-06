@@ -29,7 +29,9 @@ public class RbacInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
+    log.info("request intercepted");
     String url = request.getRequestURI();
+    log.info("url : {}", url);
     request.setAttribute("actualUrl", url);
     response.sendRedirect("/oes/rbac");
     return true;
