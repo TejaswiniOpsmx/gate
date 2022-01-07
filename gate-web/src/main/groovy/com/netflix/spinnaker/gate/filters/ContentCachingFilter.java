@@ -44,7 +44,9 @@ public class ContentCachingFilter implements Filter {
     ContentCachingResponseWrapper responseWrapper =
         new ContentCachingResponseWrapper((HttpServletResponse) response);
 
+    log.info("response1 : {}", new String(responseWrapper.getContentAsByteArray()));
     chain.doFilter(request, responseWrapper);
+    log.info("response2 : {}", new String(responseWrapper.getContentAsByteArray()));
     responseWrapper.copyBodyToResponse();
     log.info("response : {}", new String(responseWrapper.getContentAsByteArray()));
   }
