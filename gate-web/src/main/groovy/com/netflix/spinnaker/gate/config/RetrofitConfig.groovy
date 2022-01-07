@@ -17,6 +17,7 @@
 package com.netflix.spinnaker.gate.config
 
 import com.netflix.spinnaker.config.OkHttp3ClientConfiguration
+import com.opsmx.spinnaker.gate.interceptors.RetrofitInterceptor
 import groovy.transform.Canonical
 import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,6 +40,9 @@ class RetrofitConfig {
   Long writeTimeout
   Boolean retryOnConnectionFailure
 
+  @Autowired
+  RetrofitInterceptor retrofitInterceptor
+
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   OkHttpClient okHttpClient(OkHttp3ClientConfiguration okHttpClientConfig) {
@@ -49,6 +53,7 @@ class RetrofitConfig {
       .callTimeout(callTimeout, TimeUnit.MILLISECONDS)
       .writeTimeout(writeTimeout, TimeUnit.MILLISECONDS)
       .retryOnConnectionFailure(retryOnConnectionFailure)
+      .addInterceptor(retrofitInterceptor)
       .build()
   }
 
