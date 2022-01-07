@@ -16,12 +16,12 @@
 
 package com.opsmx.spinnaker.gate.interceptors;
 
-import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -29,24 +29,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class RbacInterceptor implements HandlerInterceptor {
 
-  @Autowired private OesAuthorizationService oesAuthorizationService;
+  @Autowired private ApplicationFeatureRbac applicationFeatureRbac;
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-    log.info("request intercepted");
-    String url = request.getRequestURI();
-    String userName = request.getUserPrincipal().getName();
-    log.info("url : {}", url);
-    log.info("username : {}", userName);
-    try {
-      ResponseEntity<Object> responseEntity =
-          oesAuthorizationService.authorizeUser(userName, "APP", "view", userName);
-      log.info("response : {}", responseEntity.getBody());
-    } catch (Exception e) {
-      log.error("Exception occurred while authorizing the user : {}", e);
-    }
 
+    log.info("request intercepted");
+    applicationFeatureRbac.authorizeUser(request.getUserPrincipal().getName(), request.getRequestURI(), request.getMethod());
     return true;
   }
 }

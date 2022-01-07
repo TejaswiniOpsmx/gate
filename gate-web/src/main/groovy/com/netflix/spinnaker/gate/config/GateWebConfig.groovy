@@ -26,6 +26,7 @@ import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
 import com.netflix.spinnaker.kork.web.interceptors.MetricsInterceptor
 import com.opsmx.spinnaker.gate.interceptors.OesServiceInterceptor
 import com.opsmx.spinnaker.gate.interceptors.RbacInterceptor
+import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
@@ -82,11 +83,7 @@ public class GateWebConfig implements WebMvcConfigurer {
     oesServicePathPatterns.add("/datasource/cache/evict")
     registry.addInterceptor(new OesServiceInterceptor()).addPathPatterns(oesServicePathPatterns)
 
-
-    List<String> applicationRbacPathPatterns = new ArrayList<>()
-    applicationRbacPathPatterns.add("/dashboardservice/v2/autopilot/service/feature/configuration")
-    applicationRbacPathPatterns.add("/dashboardservice/v2/users/{username}/applications/latest-canary")
-    registry.addInterceptor(rbacInterceptor).addPathPatterns(applicationRbacPathPatterns)
+    registry.addInterceptor(rbacInterceptor).addPathPatterns(ApplicationFeatureRbac.applicationFeatureRbacEndpoints)
   }
 
   @Bean
