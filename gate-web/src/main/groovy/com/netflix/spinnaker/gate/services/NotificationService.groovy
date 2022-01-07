@@ -96,6 +96,7 @@ class NotificationService {
    * @return
    */
   ResponseEntity<String> processNotificationCallback(String source, RequestEntity<String> request, String service = "echo") {
+    log.info("Got not notification from ${source}")
     Endpoint endpointToUse = echoEndpoint
     OkHttpClient clientToUse = echoOkHttpClient
     String path = request.url.path
@@ -116,7 +117,7 @@ class NotificationService {
       path = "/slack/notifications/callbacks"
     }
 
-    log.debug("Building request with URL ${endpointToUse.url + path}, Content-Type: $contentType")
+    log.info("Building request with URL ${endpointToUse.url + path}, Content-Type: $contentType")
     Request.Builder builder = new Request.Builder()
       .url(endpointToUse.url + path)
       .post(RequestBody.create(mediaType, request.body))
