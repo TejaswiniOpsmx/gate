@@ -96,6 +96,7 @@ class NotificationService {
    * @return
    */
   ResponseEntity<String> processNotificationCallback(String source, RequestEntity<String> request, String service = "echo") {
+    log.info("Got not notification from ${source}")
     Endpoint endpointToUse = echoEndpoint
     OkHttpClient clientToUse = echoOkHttpClient
     String path = request.url.path
@@ -116,14 +117,14 @@ class NotificationService {
       path = "/slack/notifications/callbacks"
     }
 
-    log.debug("Building request with URL ${endpointToUse.url + path}, Content-Type: $contentType")
+    log.info("Building request with URL ${endpointToUse.url + path}, Content-Type: $contentType")
     Request.Builder builder = new Request.Builder()
       .url(endpointToUse.url + path)
       .post(RequestBody.create(mediaType, request.body))
 
     request.getHeaders().each { String name, List values ->
       values.each { value ->
-        log.debug("Relaying request header $name: $value")
+        log.info("Relaying request header $name: $value")
         builder.addHeader(name, value.toString())
       }
     }
@@ -132,6 +133,7 @@ class NotificationService {
     try {
       Response response = clientToUse.newCall(callbackRequest).execute()
       // convert retrofit response to Spring format
+      log.info("Response got {}", response)
       String body = response.body().contentLength() > 0 ? response.body().string() : null
       HttpHeaders headers = new HttpHeaders()
       headers.putAll(response.headers().toMultimap())
