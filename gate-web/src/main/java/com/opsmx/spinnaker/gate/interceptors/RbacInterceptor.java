@@ -16,10 +16,9 @@
 
 package com.opsmx.spinnaker.gate.interceptors;
 
+import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +35,8 @@ public class RbacInterceptor implements HandlerInterceptor {
       throws Exception {
 
     log.info("request intercepted");
-    applicationFeatureRbac.authorizeUser(request.getUserPrincipal().getName(), request.getRequestURI(), request.getMethod());
+    applicationFeatureRbac.authorizeUser(
+        request.getUserPrincipal().getName(), request.getRequestURI(), request.getMethod());
     return true;
   }
 }

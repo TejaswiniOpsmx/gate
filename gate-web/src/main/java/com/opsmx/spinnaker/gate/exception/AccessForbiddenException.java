@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Slf4j
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class AccessForbiddenException extends RuntimeException{
+public class AccessForbiddenException extends RuntimeException {
 
   public AccessForbiddenException(String message) {
     super(message);

@@ -17,7 +17,6 @@
 package com.opsmx.spinnaker.gate.enums;
 
 public enum PermissionEnum {
-
   view("view a feature"),
   create_or_edit("create or edit a feature"),
   delete("delete a feature"),

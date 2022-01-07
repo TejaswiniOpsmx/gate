@@ -17,7 +17,6 @@
 package com.opsmx.spinnaker.gate.enums;
 
 public enum FeatureType {
-
   APP("Application"),
   AGENT("Agent"),
   AUDIT("Audit"),
