@@ -24,6 +24,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
@@ -31,6 +32,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
  * Setting the Content-Length header prevents a response from being transferred with chunked
  * encoding which may be problematic for some http clients.
  */
+@Slf4j
 public class ContentCachingFilter implements Filter {
   @Override
   public void init(FilterConfig filterConfig) {}
@@ -44,6 +46,7 @@ public class ContentCachingFilter implements Filter {
 
     chain.doFilter(request, responseWrapper);
     responseWrapper.copyBodyToResponse();
+    log.info("response : {}", new String(responseWrapper.getContentAsByteArray()));
   }
 
   @Override
