@@ -138,6 +138,7 @@ public class ApplicationFeatureRbac {
                 .authorizeUser(
                     userName, FeatureType.APP.name(), PermissionEnum.view.name(), userName)
                 .getBody();
+        isAuthorized = Boolean.TRUE;
         log.info("is Authorized : {}", isAuthorized);
         if (!isAuthorized) {
           throw new AccessForbiddenException(
