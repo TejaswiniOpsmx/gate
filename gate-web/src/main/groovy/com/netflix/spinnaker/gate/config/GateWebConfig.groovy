@@ -24,11 +24,13 @@ import com.netflix.spinnaker.gate.interceptors.RequestIdInterceptor
 import com.netflix.spinnaker.gate.retrofit.UpstreamBadRequest
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
 import com.netflix.spinnaker.kork.web.interceptors.MetricsInterceptor
+import com.opsmx.spinnaker.gate.filter.ApplicationRbacResponseFilter
 import com.opsmx.spinnaker.gate.interceptors.OesServiceInterceptor
 import com.opsmx.spinnaker.gate.interceptors.RbacInterceptor
 import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -65,6 +67,9 @@ public class GateWebConfig implements WebMvcConfigurer {
   @Autowired
   RbacInterceptor rbacInterceptor
 
+  @Autowired
+  ApplicationRbacResponseFilter applicationRbacResponseFilter
+
 
 
   @Override
@@ -95,6 +100,16 @@ public class GateWebConfig implements WebMvcConfigurer {
   Filter contentCachingFilter() {
     // This filter simply buffers the response so that Content-Length header can be set
     return new ContentCachingFilter()
+  }
+
+  @Bean
+  FilterRegistrationBean<ApplicationRbacResponseFilter> contentCachingFilterFilterRegistrationBean() {
+    FilterRegistrationBean<ApplicationRbacResponseFilter> registrationBean
+      = new FilterRegistrationBean<>()
+
+    registrationBean.setFilter(applicationRbacResponseFilter)
+    registrationBean.addUrlPatterns("/dashboardservice/*")
+
   }
 
   @Bean

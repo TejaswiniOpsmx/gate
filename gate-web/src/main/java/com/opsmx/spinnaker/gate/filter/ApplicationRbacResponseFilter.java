@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Netflix, Inc.
+ * Copyright 2022 OpsMx, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package com.netflix.spinnaker.gate.filters;
+package com.opsmx.spinnaker.gate.filter;
 
 import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-/**
- * This filter simply buffers/caches the response so that the Content-Length header can be set.
- * Setting the Content-Length header prevents a response from being transferred with chunked
- * encoding which may be problematic for some http clients.
- */
-public class ContentCachingFilter implements Filter {
-  @Override
-  public void init(FilterConfig filterConfig) {}
+@Slf4j
+@Order(1)
+@Component
+public class ApplicationRbacResponseFilter implements Filter {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -43,9 +37,9 @@ public class ContentCachingFilter implements Filter {
         new ContentCachingResponseWrapper((HttpServletResponse) response);
 
     chain.doFilter(request, responseWrapper);
+    log.info(
+        "response in ApplicationRbacResponseFilter : {}",
+        new String(responseWrapper.getContentAsByteArray()));
     responseWrapper.copyBodyToResponse();
   }
-
-  @Override
-  public void destroy() {}
 }
