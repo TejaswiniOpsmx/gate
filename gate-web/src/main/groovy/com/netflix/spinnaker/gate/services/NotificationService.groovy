@@ -105,7 +105,7 @@ class NotificationService {
     OkHttpClient clientToUse = echoOkHttpClient
     String path = request.url.path
 
-    log.debug("Processing notification callback: ${request.getMethod()} ${request.getUrl()}, ${request.getHeaders()}")
+    log.info("Processing notification callback: ${request.getMethod()} ${request.getUrl()}, ${request.getHeaders()}")
     String contentType = request.getHeaders().getFirst("Content-Type")?.toLowerCase()
 
     if (!contentType) {
@@ -114,12 +114,14 @@ class NotificationService {
 
     final MediaType mediaType = MediaType.parse(contentType)
 
+    log.info("Service = :${service}")
     // If the call is coming from ManagedController, use keel client and keel endpoint instead of echo
     if (service == "keel") {
       endpointToUse = keelEndpoint
       clientToUse = keelOkHttpClient
       path = "/slack/notifications/callbacks"
-    } else if (service == "orca"){
+    } else if ("orca".equalsIgnoreCase(service)){
+      log.info("came inside orca block...")
       endpointToUse = orcaEndpoint
       clientToUse = orcaOkHttpClient
     }
