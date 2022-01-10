@@ -99,7 +99,7 @@ class NotificationService {
    * @param service
    * @return
    */
-  ResponseEntity<String> processNotificationCallback(String source, RequestEntity<String> request, String service = "echo") {
+  ResponseEntity<String> processNotificationCallback(String source, RequestEntity<String> request, String service = "orca") {
     log.info("Got not notification from ${source} body ${request.body.toString()}")
     Endpoint endpointToUse = echoEndpoint
     OkHttpClient clientToUse = echoOkHttpClient
