@@ -104,8 +104,7 @@ public class GateWebConfig implements WebMvcConfigurer {
 
   @Bean
   FilterRegistrationBean<ApplicationRbacResponseFilter> contentCachingFilterFilterRegistrationBean() {
-    FilterRegistrationBean<ApplicationRbacResponseFilter> registrationBean
-      = new FilterRegistrationBean<>()
+    FilterRegistrationBean<ApplicationRbacResponseFilter> registrationBean = new FilterRegistrationBean<>()
 
     registrationBean.setFilter(applicationRbacResponseFilter)
     registrationBean.addUrlPatterns("/dashboardservice/*")
