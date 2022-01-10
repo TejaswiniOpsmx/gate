@@ -45,7 +45,7 @@ public class ContentCachingFilter implements Filter {
         new ContentCachingResponseWrapper((HttpServletResponse) response);
 
     chain.doFilter(request, responseWrapper);
-    // responseWrapper.copyBodyToResponse();
+    responseWrapper.copyBodyToResponse();
   }
 
   @Override
