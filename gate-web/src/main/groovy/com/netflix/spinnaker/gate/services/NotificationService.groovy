@@ -52,8 +52,10 @@ class NotificationService {
 
   private OkHttpClient echoOkHttpClient
   private OkHttpClient keelOkHttpClient
+  private OkHttpClient orcaOkHttpClient
   private Endpoint echoEndpoint
   private Endpoint keelEndpoint
+  private Endpoint orcaEndpoint
 
   NotificationService(@Autowired(required = false) Front50Service front50Service,
                       @Autowired OkHttpClientProvider okHttpClientProvider,
@@ -66,8 +68,10 @@ class NotificationService {
     // the original body unmodified along to echo.
     this.echoEndpoint = serviceConfiguration.getServiceEndpoint("echo")
     this.keelEndpoint = serviceConfiguration.getServiceEndpoint("keel")
-    this.echoOkHttpClient =  okHttpClientProvider.getClient(new DefaultServiceEndpoint("echo", echoEndpoint.url))
-    this.keelOkHttpClient =  okHttpClientProvider.getClient(new DefaultServiceEndpoint("keel", keelEndpoint.url))
+    this.orcaEndpoint = serviceConfiguration.getServiceEndpoint("orca")
+    this.echoOkHttpClient = okHttpClientProvider.getClient(new DefaultServiceEndpoint("echo", echoEndpoint.url))
+    this.keelOkHttpClient = okHttpClientProvider.getClient(new DefaultServiceEndpoint("keel", keelEndpoint.url))
+    this.orcaOkHttpClient = okHttpClientProvider.getClient(new DefaultServiceEndpoint("orca", orcaEndpoint.url))
   }
 
   Map getNotificationConfigs(String type, String app) {
@@ -96,7 +100,7 @@ class NotificationService {
    * @return
    */
   ResponseEntity<String> processNotificationCallback(String source, RequestEntity<String> request, String service = "echo") {
-    log.info("Got not notification from ${source} body ${request.body}")
+    log.info("Got not notification from ${source} body ${request.body.toString()}")
     Endpoint endpointToUse = echoEndpoint
     OkHttpClient clientToUse = echoOkHttpClient
     String path = request.url.path
@@ -115,6 +119,9 @@ class NotificationService {
       endpointToUse = keelEndpoint
       clientToUse = keelOkHttpClient
       path = "/slack/notifications/callbacks"
+    } else if (service == "orca"){
+      endpointToUse = orcaEndpoint
+      clientToUse = orcaOkHttpClient
     }
 
     log.info("Building request with URL ${endpointToUse.url + path}, Content-Type: $contentType")
