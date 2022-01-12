@@ -31,7 +31,8 @@ public class RetrofitInterceptor implements Interceptor {
 
   @Override
   public Response intercept(Chain chain) throws IOException {
-    log.info("retrofit request intercepted");
+
+    log.debug("retrofit request intercepted");
     Request request = chain.request();
     request = request.newBuilder().addHeader("Origin", origin).build();
 
