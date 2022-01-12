@@ -18,7 +18,7 @@ interface OesAuthorizationService {
   @PutMapping(value = "/platformservice/v2/usergroups/importAndCache", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Object> cacheUserGroups(@RequestBody Collection<String> data, @RequestHeader(value = "x-spinnaker-user") String userName)
 
-  @GetMapping(value = "/platformservice/v1/users/{username}/features/{feature}/permissions/{permission}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/platformservice/v6/users/{username}/features/{feature}/permissions/{permission}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Boolean> authorizeUser(@PathVariable("username") String username, @PathVariable("feature") String feature, @PathVariable("permission") String permission, @RequestHeader(value = "x-spinnaker-user") String userName)
 
 }
