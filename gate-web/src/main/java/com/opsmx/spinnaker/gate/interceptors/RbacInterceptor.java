@@ -37,6 +37,7 @@ public class RbacInterceptor implements HandlerInterceptor {
       throws Exception {
 
     log.info("request intercepted");
+    log.info("Cookie headers : {}", request.getHeader("Cookie"));
     applicationFeatureRbac.authorizeUser(
         request.getUserPrincipal().getName(), request.getRequestURI(), request.getMethod());
     return true;

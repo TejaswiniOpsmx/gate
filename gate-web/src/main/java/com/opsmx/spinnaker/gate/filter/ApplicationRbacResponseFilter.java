@@ -16,7 +16,10 @@
 
 package com.opsmx.spinnaker.gate.filter;
 
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,8 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 @Component
 public class ApplicationRbacResponseFilter implements Filter {
 
+  private static Gson gson = new Gson();
+
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
@@ -37,9 +42,13 @@ public class ApplicationRbacResponseFilter implements Filter {
         new ContentCachingResponseWrapper((HttpServletResponse) response);
 
     chain.doFilter(request, responseWrapper);
-    log.info(
-        "response in ApplicationRbacResponseFilter : {}",
-        new String(responseWrapper.getContentAsByteArray()));
+    String content = new String(responseWrapper.getContentAsByteArray());
+    log.info("response in ApplicationRbacResponseFilter : {}", content);
+    Map<String, String> responseBody = new HashMap<>();
+    responseBody.put("id", "1");
+    responseBody.put("modifiedBy", "Pranav");
+    responseWrapper.getWriter().write(gson.toJson(responseBody, Map.class));
+
     responseWrapper.copyBodyToResponse();
   }
 }
