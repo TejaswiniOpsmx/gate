@@ -168,8 +168,8 @@ public class RequestSheddingFilter extends HttpFilter {
 
     String uri = request.getRequestURI();
     if ("/error".equals(uri)) {
-      response.sendRedirect("/oes/error");
-      return;
+      // response.sendRedirect("/oes/error");
+      // return;
     }
 
     chain.doFilter(request, response);
