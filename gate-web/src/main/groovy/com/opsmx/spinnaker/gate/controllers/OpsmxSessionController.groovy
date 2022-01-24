@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
 
@@ -54,6 +55,24 @@ class OpsmxSessionController {
     HttpSession session = request.getSession()
     session.setMaxInactiveInterval(duration)
     log.debug("Session timeout is overridden by {} seconds" , duration)
+  }
+
+  @ApiOperation(value = "get session cookie")
+  @GetMapping(value = "/getSessionCookie")
+  Integer getSessionCookie(HttpServletRequest request) {
+
+    String cookie = request.getHeader("Cookie")
+    log.info("Got cookie from header: " + cookie)
+    if(cookie == null){
+      Cookie[] cookies = request.getCookies()
+      Optional.ofNullable(cookies).ifPresent({ arr ->
+        Arrays.stream(arr).filter({ ckie -> ckie.getName().equalsIgnoreCase("SESSION") }).findFirst().ifPresent({ c ->
+          cookie = "SESSION=" + c.getValue()
+        })
+      })
+      log.info("Got cookie from cookies: " + cookie)
+    }
+    return cookie
   }
 
 }
