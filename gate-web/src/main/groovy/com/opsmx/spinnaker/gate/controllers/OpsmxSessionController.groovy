@@ -16,9 +16,11 @@
 
 package com.opsmx.spinnaker.gate.controllers
 
+import com.netflix.spinnaker.gate.config.TempPlaceHolder
 import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.*
 
@@ -32,6 +34,9 @@ class OpsmxSessionController {
 
   @Value('${server.session.timeout-in-seconds:3600}')
   int sessionTimeout
+
+  @Autowired
+  TempPlaceHolder tempPlaceHolder
 
   @ApiOperation(value = "get session timeout")
   @GetMapping(value = "/getSessionTimeout")
@@ -55,9 +60,8 @@ class OpsmxSessionController {
   @GetMapping(value = "/getSessionCookie")
   String getSessionCookie(HttpServletRequest request) {
 
-    String cookie = request.getHeader("Cookie")
-    log.info("Got cookie from header: " + cookie)
-    return cookie
+    log.info("Got cookie from tempPlaceHolder: " + tempPlaceHolder.getCookie())
+    return tempPlaceHolder.getCookie()
   }
 
 }

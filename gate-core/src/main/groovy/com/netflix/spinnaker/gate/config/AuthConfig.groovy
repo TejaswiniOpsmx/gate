@@ -125,6 +125,7 @@ class AuthConfig {
         .antMatchers(HttpMethod.GET,'/autopilot/mgmt/**').permitAll()
         .antMatchers(HttpMethod.POST,'/datasource/cache/save').permitAll()
         .antMatchers(HttpMethod.DELETE,'/datasource/cache/evict').permitAll()
+        .antMatchers(HttpMethod.GET,'/session/getSessionCookie').permitAll()
         .antMatchers('/plugins/deck/**').permitAll()
         .antMatchers(HttpMethod.POST, '/webhooks/**').permitAll()
         .antMatchers(HttpMethod.POST, '/notifications/callbacks/**').permitAll()

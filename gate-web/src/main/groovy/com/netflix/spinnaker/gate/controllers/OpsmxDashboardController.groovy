@@ -16,7 +16,7 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-
+import com.netflix.spinnaker.gate.config.TempPlaceHolder
 import com.netflix.spinnaker.gate.services.internal.OpsmxDashboardService
 import com.opsmx.spinnaker.gate.factory.dashboard.DashboardCachingServiceBeanFactory
 import com.opsmx.spinnaker.gate.service.DashboardCachingService
@@ -52,6 +52,9 @@ class OpsmxDashboardController {
 
   @Autowired
   OpsmxDashboardService opsmxDashboardService
+
+  @Autowired
+  TempPlaceHolder tempPlaceHolder
 
   @Autowired
   DashboardCachingServiceBeanFactory dashboardCachingServiceBeanFactory
@@ -282,7 +285,8 @@ class OpsmxDashboardController {
                            @PathVariable("source") String source,
                            @PathVariable("source1") String source1,
                            @RequestBody(required = false) Object data) {
-
+    String cookie = request.getHeader("Cookie")
+    tempPlaceHolder.setCookie(cookie)
     return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, data)
   }
 
