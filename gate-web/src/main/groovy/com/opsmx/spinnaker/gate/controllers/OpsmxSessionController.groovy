@@ -53,7 +53,7 @@ class OpsmxSessionController {
 
   @ApiOperation(value = "get session cookie")
   @GetMapping(value = "/getSessionCookie")
-  Integer getSessionCookie(HttpServletRequest request) {
+  String getSessionCookie(HttpServletRequest request) {
 
     String cookie = request.getHeader("Cookie")
     log.info("Got cookie from header: " + cookie)
