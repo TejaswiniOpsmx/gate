@@ -16,18 +16,12 @@
 
 package com.opsmx.spinnaker.gate.controllers
 
-
 import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
-import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
 
@@ -63,15 +57,6 @@ class OpsmxSessionController {
 
     String cookie = request.getHeader("Cookie")
     log.info("Got cookie from header: " + cookie)
-    if(cookie == null){
-      Cookie[] cookies = request.getCookies()
-      Optional.ofNullable(cookies).ifPresent({ arr ->
-        Arrays.stream(arr).filter({ ckie -> ckie.getName().equalsIgnoreCase("SESSION") }).findFirst().ifPresent({ c ->
-          cookie = "SESSION=" + c.getValue()
-        })
-      })
-      log.info("Got cookie from cookies: " + cookie)
-    }
     return cookie
   }
 
