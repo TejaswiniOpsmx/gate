@@ -180,3 +180,6 @@ security:
       firstName:
       lastName: name
       username: login
+
+oes:
+  allowUnprotectedAPIs: false

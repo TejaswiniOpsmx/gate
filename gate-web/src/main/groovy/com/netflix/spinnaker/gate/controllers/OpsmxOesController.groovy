@@ -16,13 +16,16 @@
 
 package com.netflix.spinnaker.gate.controllers
 
+import com.netflix.spinnaker.gate.exceptions.OesEndpointNotFoundException
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+
 import java.util.stream.Collectors
 
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
@@ -58,6 +61,9 @@ class OpsmxOesController {
   @Autowired
   OkHttpClient okHttpClient
 
+  @Value('${oes.allowUnprotectedAPIs:false}')
+  boolean allowUnprotectedAPIs
+
   @ApiOperation(value = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{source}", method = RequestMethod.POST)
   Object postOesResponse(@PathVariable("source") String source,
@@ -80,7 +86,7 @@ class OpsmxOesController {
                         @RequestParam(value = "endTime", required = false) String endTime) {
 
     return opsmxOesService.getOesResponse(type, source, isTreeView, isLatest,
-            applicationName, chartId, imageSource, accountName, startTime, endTime)
+      applicationName, chartId, imageSource, accountName, startTime, endTime)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -101,7 +107,7 @@ class OpsmxOesController {
                          @RequestParam(value = "isTreeView", required = false) boolean isTreeView,
                          @RequestParam(value = "isLatest", required = false) boolean isLatest) {
 
-    return opsmxOesService.getOesResponse5(type, source, source1, source2,isTreeView,isLatest)
+    return opsmxOesService.getOesResponse5(type, source, source1, source2, isTreeView, isLatest)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -114,7 +120,7 @@ class OpsmxOesController {
                          @RequestParam(value = "permissionId", required = false) String permissionId,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
 
-    return opsmxOesService.getOesResponse6(type, source, source1, source2, source3,permissionId,noOfDays)
+    return opsmxOesService.getOesResponse6(type, source, source1, source2, source3, permissionId, noOfDays)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -171,11 +177,11 @@ class OpsmxOesController {
     return opsmxOesService.deleteOesResponse6(type, source, source1, source2, source3)
   }
 
-  @ApiOperation(value = "Add or Update dynamic account configured in Spinnaker", response = String.class )
+  @ApiOperation(value = "Add or Update dynamic account configured in Spinnaker", response = String.class)
   @RequestMapping(value = "/accountsConfig/addOrUpdateDynamicAccount", method = RequestMethod.POST)
   String addOrUpdateAccount(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
-	String filename = files ? files.getOriginalFilename() : ''
-	return addOrUpdateDynamicAccount(files, postData.get("postData"))
+    String filename = files ? files.getOriginalFilename() : ''
+    return addOrUpdateDynamicAccount(files, postData.get("postData"))
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -264,7 +270,7 @@ class OpsmxOesController {
     return opsmxOesService.updateOesResponse6(type, source, source1, source2, source3, data)
   }
 
-  @ApiOperation(value = "Add or Update dynamic account configured in Spinnaker", response = String.class )
+  @ApiOperation(value = "Add or Update dynamic account configured in Spinnaker", response = String.class)
   @RequestMapping(value = "/accountsConfig/cloudProviders/addOrUpdateDynamicAccount", method = RequestMethod.POST)
   String addOrUpdateCloudProver(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
     String filename = files ? files.getOriginalFilename() : ''
@@ -277,7 +283,7 @@ class OpsmxOesController {
     return addOrUpdateSpinnaker(files, postData.get("postData"))
   }
 
-  @ApiOperation(value = "Add or Update spinnaker cloudprovider account configured in Spinnaker", response = String.class )
+  @ApiOperation(value = "Add or Update spinnaker cloudprovider account configured in Spinnaker", response = String.class)
   @RequestMapping(value = "/accountsConfig/spinnaker/addOrUpdateCloudProviderAccount", method = RequestMethod.POST)
   String addOrUpdateSpinnakerCloudProver(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
     String filename = files ? files.getOriginalFilename() : ''
@@ -287,23 +293,23 @@ class OpsmxOesController {
   @ApiOperation(value = "Add or Update Spinnaker x509")
   @RequestMapping(value = "/accountsConfig/{version}/spinnakerX509", method = RequestMethod.POST)
   Object addOrUpdateSpinnakerSetupV1(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
-	return createOrUpdateSpinnaker(files, postData.get("postData"), version)
+    return createOrUpdateSpinnaker(files, postData.get("postData"), version)
   }
 
   private String addOrUpdateSpinnakerCloudProverAccount(MultipartFile files, String data) {
     Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
     Map headersMap = new HashMap()
     authenticationHeaders.each { key, val ->
-      if(val.isPresent())
-        headersMap.putAt(key,val.get())
+      if (val.isPresent())
+        headersMap.putAt(key, val.get())
       else
-        headersMap.putAt(key,"")
+        headersMap.putAt(key, "")
     }
-    def obj =  AuthenticatedRequest.propagate {
+    def obj = AuthenticatedRequest.propagate {
       def request = new Request.Builder()
-        .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/spinnaker/addOrUpdateCloudProviderAccount")
+        .url(serviceConfiguration.getServiceEndpoint("opsmx").url + "/oes/accountsConfig/spinnaker/addOrUpdateCloudProviderAccount")
         .headers(Headers.of(headersMap))
-        .post(uploadFileOkHttp(data,files))
+        .post(uploadFileOkHttp(data, files))
         .build()
 
       def response = okHttpClient.newCall(request).execute()
@@ -313,7 +319,7 @@ class OpsmxOesController {
     if (!obj.isSuccessful()) {
       def error = obj.body().string();
       throw new OesRequestException(error)
-    } else{
+    } else {
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
   }
@@ -322,16 +328,16 @@ class OpsmxOesController {
     Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
     Map headersMap = new HashMap()
     authenticationHeaders.each { key, val ->
-      if(val.isPresent())
-        headersMap.putAt(key,val.get())
+      if (val.isPresent())
+        headersMap.putAt(key, val.get())
       else
-        headersMap.putAt(key,"")
+        headersMap.putAt(key, "")
     }
     AuthenticatedRequest.propagate {
       def request = new Request.Builder()
-        .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/spinnakerX509")
+        .url(serviceConfiguration.getServiceEndpoint("opsmx").url + "/oes/accountsConfig/spinnakerX509")
         .headers(Headers.of(headersMap))
-        .post(uploadFileOkHttp(data,files))
+        .post(uploadFileOkHttp(data, files))
         .build()
 
       def response = okHttpClient.newCall(request).execute()
@@ -343,16 +349,16 @@ class OpsmxOesController {
     Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
     Map headersMap = new HashMap()
     authenticationHeaders.each { key, val ->
-      if(val.isPresent())
-        headersMap.putAt(key,val.get())
+      if (val.isPresent())
+        headersMap.putAt(key, val.get())
       else
-        headersMap.putAt(key,"")
+        headersMap.putAt(key, "")
     }
     def obj = AuthenticatedRequest.propagate {
       def request = new Request.Builder()
-        .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/version/spinnakerX509".replace("version", version))
+        .url(serviceConfiguration.getServiceEndpoint("opsmx").url + "/oes/accountsConfig/version/spinnakerX509".replace("version", version))
         .headers(Headers.of(headersMap))
-        .post(uploadFileOkHttp(data,files))
+        .post(uploadFileOkHttp(data, files))
         .build()
       def response = okHttpClient.newCall(request).execute()
       return response
@@ -362,7 +368,7 @@ class OpsmxOesController {
       def error = obj.body().string();
       log.error("Failed to setup the Spinnaker : {}", error)
       throw new OesRequestException(error)
-    } else{
+    } else {
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
   }
@@ -371,16 +377,16 @@ class OpsmxOesController {
     Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
     Map headersMap = new HashMap()
     authenticationHeaders.each { key, val ->
-      if(val.isPresent())
-        headersMap.putAt(key,val.get())
+      if (val.isPresent())
+        headersMap.putAt(key, val.get())
       else
-        headersMap.putAt(key,"")
+        headersMap.putAt(key, "")
     }
     AuthenticatedRequest.propagate {
       def request = new Request.Builder()
-        .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/cloudProviders/addOrUpdateDynamicAccount")
+        .url(serviceConfiguration.getServiceEndpoint("opsmx").url + "/oes/accountsConfig/cloudProviders/addOrUpdateDynamicAccount")
         .headers(Headers.of(headersMap))
-        .post(uploadFileOkHttp(data,files))
+        .post(uploadFileOkHttp(data, files))
         .build()
 
       def response = okHttpClient.newCall(request).execute()
@@ -390,95 +396,98 @@ class OpsmxOesController {
 
   private String addOrUpdateDynamicAccount(MultipartFile files, String data) {
 
-	  Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
-	  Map headersMap = new HashMap()
-	  authenticationHeaders.each { key, val ->
-		  if(val.isPresent())
-		   headersMap.putAt(key,val.get())
-		  else
-		   headersMap.putAt(key,"")
-	  }
-	  AuthenticatedRequest.propagate {
-		  def request = new Request.Builder()
-			.url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/oes/accountsConfig/addOrUpdateDynamicAccount")
-			.headers(Headers.of(headersMap))
-			.post(uploadFileOkHttp(data,files))
-			.build()
+    Map<String, Optional<String>> authenticationHeaders = AuthenticatedRequest.getAuthenticationHeaders();
+    Map headersMap = new HashMap()
+    authenticationHeaders.each { key, val ->
+      if (val.isPresent())
+        headersMap.putAt(key, val.get())
+      else
+        headersMap.putAt(key, "")
+    }
+    AuthenticatedRequest.propagate {
+      def request = new Request.Builder()
+        .url(serviceConfiguration.getServiceEndpoint("opsmx").url + "/oes/accountsConfig/addOrUpdateDynamicAccount")
+        .headers(Headers.of(headersMap))
+        .post(uploadFileOkHttp(data, files))
+        .build()
 
-		  def response = okHttpClient.newCall(request).execute()
-		  return response.body()?.string() ?: "Unknown reason: " + response.code()
-		}.call() as String
+      def response = okHttpClient.newCall(request).execute()
+      return response.body()?.string() ?: "Unknown reason: " + response.code()
+    }.call() as String
   }
 
   private okhttp3.RequestBody uploadFileOkHttp(String data, MultipartFile multiPartfile) throws IOException {
 
-	  String fileName = multiPartfile.getOriginalFilename();
-	  MultipartBody.Builder builder = new MultipartBody.Builder();
-	  builder.setType(MultipartBody.FORM);
-	  builder.addFormDataPart("files", fileName, new okhttp3.RequestBody() {
-		  @Override
-		  public MediaType contentType() {
-			  return MediaType.parse("application/octet-stream");
-		  }
+    String fileName = multiPartfile.getOriginalFilename();
+    MultipartBody.Builder builder = new MultipartBody.Builder();
+    builder.setType(MultipartBody.FORM);
+    builder.addFormDataPart("files", fileName, new okhttp3.RequestBody() {
+      @Override
+      public MediaType contentType() {
+        return MediaType.parse("application/octet-stream");
+      }
 
-		  @Override
-		  public void writeTo(BufferedSink sink) throws IOException {
-			  try {
-				  Source source = Okio.source(multiPartfile.getInputStream());
-				  Buffer buf = new Buffer();
+      @Override
+      public void writeTo(BufferedSink sink) throws IOException {
+        try {
+          Source source = Okio.source(multiPartfile.getInputStream());
+          Buffer buf = new Buffer();
 
-				  long totalRead = 0;
-				  long totalSize = multiPartfile.getSize();
-				  long remaining = totalSize;
+          long totalRead = 0;
+          long totalSize = multiPartfile.getSize();
+          long remaining = totalSize;
 
-				  for (long readCount; (readCount = source.read(buf, 32000)) != -1;) {
+          for (long readCount; (readCount = source.read(buf, 32000)) != -1;) {
 
-					  totalRead += readCount;
-					  remaining -= readCount;
+            totalRead += readCount;
+            remaining -= readCount;
 
-					  sink.write(buf, readCount);
-					  sink.flush();
+            sink.write(buf, readCount);
+            sink.flush();
 
-				  }
-			  } catch (Exception e) {
-				  e.printStackTrace();
-			  }
-		  }
-	  });
-	  builder.addFormDataPart("postData", null, okhttp3.RequestBody.create(MediaType.parse("text/plain"), data));
-	  return builder.build();
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    builder.addFormDataPart("postData", null, okhttp3.RequestBody.create(MediaType.parse("text/plain"), data));
+    return builder.build();
   }
 
   @ApiOperation(value = "download the manifest file")
   @GetMapping(value = "/accountsConfig/cloudProviders/manifestfile/{agentName}", produces = "application/octet-stream")
-  @ResponseBody Object getDownloadManifestFile(@PathVariable("agentName") String agentName){
+  @ResponseBody
+  Object getDownloadManifestFile(@PathVariable("agentName") String agentName) {
 
-	Response response = opsmxOesService.manifestDownloadFile(agentName)
-	InputStream inputStream = response.getBody().in()
-	try {
-	  byte [] manifestFile = IOUtils.toByteArray(inputStream)
-	  HttpHeaders headers = new HttpHeaders()
-	  headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
-	  return ResponseEntity.ok().headers(headers).body(manifestFile)
-	} finally{
-	  if (inputStream!=null){
-		inputStream.close()
-	  }
-	}
+    Response response = opsmxOesService.manifestDownloadFile(agentName)
+    InputStream inputStream = response.getBody().in()
+    try {
+      byte[] manifestFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(manifestFile)
+    } finally {
+      if (inputStream != null) {
+        inputStream.close()
+      }
+    }
   }
+
   @ApiOperation(value = "download the manifest file")
   @GetMapping(value = "accountsConfig/agents/{agentName}/manifest", produces = "application/octet-stream")
-  @ResponseBody Object getDownloadAgentManifestFile(@PathVariable("agentName") String agentName){
+  @ResponseBody
+  Object getDownloadAgentManifestFile(@PathVariable("agentName") String agentName) {
 
     Response response = opsmxOesService.agentManifestDownloadFile(agentName)
     InputStream inputStream = response.getBody().in()
     try {
-      byte [] manifestFile = IOUtils.toByteArray(inputStream)
+      byte[] manifestFile = IOUtils.toByteArray(inputStream)
       HttpHeaders headers = new HttpHeaders()
       headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
       return ResponseEntity.ok().headers(headers).body(manifestFile)
-    } finally{
-      if (inputStream!=null){
+    } finally {
+      if (inputStream != null) {
         inputStream.close()
       }
     }
@@ -493,7 +502,11 @@ class OpsmxOesController {
                          @PathVariable("source3") String source3,
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5) {
-    return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5)
+    if (allowUnprotectedAPIs) {
+      return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5)
+    } else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -506,7 +519,11 @@ class OpsmxOesController {
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5,
                          @PathVariable("source6") String source6) {
-    return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
+    if (allowUnprotectedAPIs) {
+      return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
+    } else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -518,21 +535,29 @@ class OpsmxOesController {
                           @PathVariable("source3") String source3,
                           @PathVariable("source4") String source4,
                           @RequestBody(required = false) Object data) {
-
-    return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
+    if (allowUnprotectedAPIs) {
+      return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
+    } else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "download the manifest file")
   @GetMapping(value = "/accountsConfig/{version}/agents/{agentName}/manifest/apple/automation", produces = "application/octet-stream")
-  @ResponseBody Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,
-                                                 @PathVariable("version") String version){
-
-    Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
-    response.getBody().in().withCloseable {inputStream ->
-      byte [] manifestFile = IOUtils.toByteArray(inputStream)
-      HttpHeaders headers = new HttpHeaders()
-      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
-      return ResponseEntity.ok().headers(headers).body(manifestFile)
+  @ResponseBody
+  Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,
+                                   @PathVariable("version") String version) {
+    if (allowUnprotectedAPIs) {
+      Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
+      response.getBody().in().withCloseable { inputStream ->
+        byte[] manifestFile = IOUtils.toByteArray(inputStream)
+        HttpHeaders headers = new HttpHeaders()
+        headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        return ResponseEntity.ok().headers(headers).body(manifestFile)
+      }
+    } else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
     }
+
   }
 }
