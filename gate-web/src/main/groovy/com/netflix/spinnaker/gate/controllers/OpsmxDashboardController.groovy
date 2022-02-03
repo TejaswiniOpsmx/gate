@@ -20,7 +20,6 @@ import com.netflix.spinnaker.gate.exceptions.OesEndpointNotFoundException
 import com.netflix.spinnaker.gate.services.internal.OpsmxDashboardService
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
-import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
@@ -50,8 +49,8 @@ class OpsmxDashboardController {
   @Autowired
   OpsmxDashboardService opsmxDashboardService
 
-  @Value('${oes.allowUnprotectedAPIs:false}')
-  boolean allowUnprotectedAPIs
+  @Value('${oes.agentOnboardingAPIs:false}')
+  boolean isAgentOnboardingAPIsEnabled
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
@@ -154,7 +153,7 @@ class OpsmxDashboardController {
                                @PathVariable("source4") String source4,
                                @PathVariable("source5") String source5,
                                @PathVariable("source6") String source6) {
-    if (allowUnprotectedAPIs) {
+    if (isAgentOnboardingAPIsEnabled) {
       return opsmxDashboardService.getDashboardResponse9(version, type, source, source1, source2, source3, source4, source5, source6)
     } else {
       throw new OesEndpointNotFoundException("Endpoint not found")

@@ -182,4 +182,4 @@ security:
       username: login
 
 oes:
-  allowUnprotectedAPIs: false
+  agentOnboardingAPIs: false

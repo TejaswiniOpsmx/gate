@@ -61,8 +61,8 @@ class OpsmxOesController {
   @Autowired
   OkHttpClient okHttpClient
 
-  @Value('${oes.allowUnprotectedAPIs:false}')
-  boolean allowUnprotectedAPIs
+  @Value('${oes.agentOnboardingAPIs:false}')
+  boolean isAgentOnboardingAPIsEnabled
 
   @ApiOperation(value = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{source}", method = RequestMethod.POST)
@@ -502,7 +502,7 @@ class OpsmxOesController {
                          @PathVariable("source3") String source3,
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5) {
-    if (allowUnprotectedAPIs) {
+    if (isAgentOnboardingAPIsEnabled) {
       return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5)
     } else {
       throw new OesEndpointNotFoundException("Endpoint not found")
@@ -519,7 +519,7 @@ class OpsmxOesController {
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5,
                          @PathVariable("source6") String source6) {
-    if (allowUnprotectedAPIs) {
+    if (isAgentOnboardingAPIsEnabled) {
       return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
     } else {
       throw new OesEndpointNotFoundException("Endpoint not found")
@@ -535,7 +535,7 @@ class OpsmxOesController {
                           @PathVariable("source3") String source3,
                           @PathVariable("source4") String source4,
                           @RequestBody(required = false) Object data) {
-    if (allowUnprotectedAPIs) {
+    if (isAgentOnboardingAPIsEnabled) {
       return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
     } else {
       throw new OesEndpointNotFoundException("Endpoint not found")
@@ -547,7 +547,7 @@ class OpsmxOesController {
   @ResponseBody
   Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,
                                    @PathVariable("version") String version) {
-    if (allowUnprotectedAPIs) {
+    if (isAgentOnboardingAPIsEnabled) {
       Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
       response.getBody().in().withCloseable { inputStream ->
         byte[] manifestFile = IOUtils.toByteArray(inputStream)
