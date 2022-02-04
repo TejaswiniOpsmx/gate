@@ -79,8 +79,12 @@ class OpsmxDashboardController {
                                @RequestParam(value = "sortOrder", required = false) String sortOrder,
                                @RequestParam(value = "search", required = false) String search,
                                @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
-
-    return opsmxDashboardService.getDashboardResponse4(version, type, source, source1, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays)
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
+    if(isAgentOnboardingAPIsEnabled){
+      return opsmxDashboardService.getDashboardResponse4(version, type, source, source1, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays)
+    }else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
@@ -265,8 +269,12 @@ class OpsmxDashboardController {
                                 @PathVariable("source") String source,
                                 @PathVariable("source1") String source1,
                                 @RequestBody(required = false) Object data) {
-
-    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, data)
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
+    if(isAgentOnboardingAPIsEnabled){
+      return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, data)
+    } else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")

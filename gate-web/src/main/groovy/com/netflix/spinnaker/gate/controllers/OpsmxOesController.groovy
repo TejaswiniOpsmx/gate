@@ -119,8 +119,12 @@ class OpsmxOesController {
                          @PathVariable("source3") String source3,
                          @RequestParam(value = "permissionId", required = false) String permissionId,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
-
-    return opsmxOesService.getOesResponse6(type, source, source1, source2, source3, permissionId, noOfDays)
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
+    if(isAgentOnboardingAPIsEnabled){
+      return opsmxOesService.getOesResponse6(type, source, source1, source2, source3, permissionId, noOfDays)
+    }else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -134,7 +138,12 @@ class OpsmxOesController {
                          @RequestParam(value = "imageId", required = false) String imageId,
                          @RequestParam(value = "executionId", required = false) String executionId,
                          @RequestParam(value = "gateIds", required = false) String gateIds) {
-    return opsmxOesService.getOesResponse7(type, source, source1, source2, source3, source4, imageId, executionId, gateIds)
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
+    if(isAgentOnboardingAPIsEnabled){
+      return opsmxOesService.getOesResponse7(type, source, source1, source2, source3, source4, imageId, executionId, gateIds)
+    }else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -224,8 +233,12 @@ class OpsmxOesController {
                           @PathVariable("source2") String source2,
                           @PathVariable("source3") String source3,
                           @RequestBody(required = false) Object data) {
-
-    return opsmxOesService.postOesResponse6(type, source, source1, source2, source3, data)
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
+    if(isAgentOnboardingAPIsEnabled){
+      return opsmxOesService.postOesResponse6(type, source, source1, source2, source3, data)
+    }else {
+      throw new OesEndpointNotFoundException("Endpoint not found")
+    }
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
