@@ -502,6 +502,7 @@ class OpsmxOesController {
                          @PathVariable("source3") String source3,
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5) {
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
     if (isAgentOnboardingAPIsEnabled) {
       return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5)
     } else {
@@ -519,6 +520,7 @@ class OpsmxOesController {
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5,
                          @PathVariable("source6") String source6) {
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
     if (isAgentOnboardingAPIsEnabled) {
       return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
     } else {
@@ -535,6 +537,7 @@ class OpsmxOesController {
                           @PathVariable("source3") String source3,
                           @PathVariable("source4") String source4,
                           @RequestBody(required = false) Object data) {
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
     if (isAgentOnboardingAPIsEnabled) {
       return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
     } else {
@@ -547,6 +550,7 @@ class OpsmxOesController {
   @ResponseBody
   Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,
                                    @PathVariable("version") String version) {
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
     if (isAgentOnboardingAPIsEnabled) {
       Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
       response.getBody().in().withCloseable { inputStream ->

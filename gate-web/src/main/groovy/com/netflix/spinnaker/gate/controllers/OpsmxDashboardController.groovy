@@ -153,6 +153,7 @@ class OpsmxDashboardController {
                                @PathVariable("source4") String source4,
                                @PathVariable("source5") String source5,
                                @PathVariable("source6") String source6) {
+    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
     if (isAgentOnboardingAPIsEnabled) {
       return opsmxDashboardService.getDashboardResponse9(version, type, source, source1, source2, source3, source4, source5, source6)
     } else {
