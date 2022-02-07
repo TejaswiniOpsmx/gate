@@ -16,7 +16,6 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-import com.netflix.spinnaker.gate.exceptions.OesEndpointNotFoundException
 import com.netflix.spinnaker.gate.services.internal.OpsmxDashboardService
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
@@ -49,9 +48,6 @@ class OpsmxDashboardController {
   @Autowired
   OpsmxDashboardService opsmxDashboardService
 
-  @Value('${oes.agentOnboardingAPIs:false}')
-  boolean isAgentOnboardingAPIsEnabled
-
   @ApiOperation(value = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
   Object getDashboardResponse1(@PathVariable("version") String version,
@@ -79,12 +75,9 @@ class OpsmxDashboardController {
                                @RequestParam(value = "sortOrder", required = false) String sortOrder,
                                @RequestParam(value = "search", required = false) String search,
                                @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if(isAgentOnboardingAPIsEnabled){
-      return opsmxDashboardService.getDashboardResponse4(version, type, source, source1, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays)
-    }else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxDashboardService.getDashboardResponse4(version, type, source, source1, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays)
+
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
@@ -157,12 +150,9 @@ class OpsmxDashboardController {
                                @PathVariable("source4") String source4,
                                @PathVariable("source5") String source5,
                                @PathVariable("source6") String source6) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if (isAgentOnboardingAPIsEnabled) {
-      return opsmxDashboardService.getDashboardResponse9(version, type, source, source1, source2, source3, source4, source5, source6)
-    } else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxDashboardService.getDashboardResponse9(version, type, source, source1, source2, source3, source4, source5, source6)
+
 
   }
 
@@ -269,12 +259,9 @@ class OpsmxDashboardController {
                                 @PathVariable("source") String source,
                                 @PathVariable("source1") String source1,
                                 @RequestBody(required = false) Object data) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if(isAgentOnboardingAPIsEnabled){
-      return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, data)
-    } else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, data)
+
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")

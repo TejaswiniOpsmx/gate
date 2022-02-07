@@ -16,7 +16,6 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-import com.netflix.spinnaker.gate.exceptions.OesEndpointNotFoundException
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -60,9 +59,6 @@ class OpsmxOesController {
 
   @Autowired
   OkHttpClient okHttpClient
-
-  @Value('${oes.agentOnboardingAPIs:false}')
-  boolean isAgentOnboardingAPIsEnabled
 
   @ApiOperation(value = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{source}", method = RequestMethod.POST)
@@ -119,12 +115,8 @@ class OpsmxOesController {
                          @PathVariable("source3") String source3,
                          @RequestParam(value = "permissionId", required = false) String permissionId,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if(isAgentOnboardingAPIsEnabled){
-      return opsmxOesService.getOesResponse6(type, source, source1, source2, source3, permissionId, noOfDays)
-    }else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxOesService.getOesResponse6(type, source, source1, source2, source3, permissionId, noOfDays)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -138,12 +130,8 @@ class OpsmxOesController {
                          @RequestParam(value = "imageId", required = false) String imageId,
                          @RequestParam(value = "executionId", required = false) String executionId,
                          @RequestParam(value = "gateIds", required = false) String gateIds) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if(isAgentOnboardingAPIsEnabled){
-      return opsmxOesService.getOesResponse7(type, source, source1, source2, source3, source4, imageId, executionId, gateIds)
-    }else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxOesService.getOesResponse7(type, source, source1, source2, source3, source4, imageId, executionId, gateIds)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -233,12 +221,9 @@ class OpsmxOesController {
                           @PathVariable("source2") String source2,
                           @PathVariable("source3") String source3,
                           @RequestBody(required = false) Object data) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if(isAgentOnboardingAPIsEnabled){
-      return opsmxOesService.postOesResponse6(type, source, source1, source2, source3, data)
-    }else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxOesService.postOesResponse6(type, source, source1, source2, source3, data)
+
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -515,12 +500,8 @@ class OpsmxOesController {
                          @PathVariable("source3") String source3,
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if (isAgentOnboardingAPIsEnabled) {
-      return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5)
-    } else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -533,12 +514,8 @@ class OpsmxOesController {
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5,
                          @PathVariable("source6") String source6) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if (isAgentOnboardingAPIsEnabled) {
-      return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
-    } else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -550,12 +527,8 @@ class OpsmxOesController {
                           @PathVariable("source3") String source3,
                           @PathVariable("source4") String source4,
                           @RequestBody(required = false) Object data) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if (isAgentOnboardingAPIsEnabled) {
-      return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
-    } else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
+
+    return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
   }
 
   @ApiOperation(value = "download the manifest file")
@@ -563,18 +536,13 @@ class OpsmxOesController {
   @ResponseBody
   Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,
                                    @PathVariable("version") String version) {
-    log.info("********** Agent onboarding value "+ isAgentOnboardingAPIsEnabled)
-    if (isAgentOnboardingAPIsEnabled) {
-      Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
-      response.getBody().in().withCloseable { inputStream ->
-        byte[] manifestFile = IOUtils.toByteArray(inputStream)
-        HttpHeaders headers = new HttpHeaders()
-        headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
-        return ResponseEntity.ok().headers(headers).body(manifestFile)
-      }
-    } else {
-      throw new OesEndpointNotFoundException("Endpoint not found")
-    }
 
+    Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
+    response.getBody().in().withCloseable { inputStream ->
+      byte[] manifestFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(manifestFile)
+    }
   }
 }

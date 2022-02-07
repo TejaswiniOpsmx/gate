@@ -181,5 +181,5 @@ security:
       lastName: name
       username: login
 
-oes:
-  agentOnboardingAPIs: false
+authenticate:
+  agentOnboardingAPIs: true
