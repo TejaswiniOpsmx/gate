@@ -92,8 +92,8 @@ class AuthConfig {
     // @formatter:off
     http
       .requestMatcher(requestMatcherProvider.requestMatcher())
-      .and().sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.ALWAYS).and()
+      .sessionManagement()
+      .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
       .authorizeRequests()
         .antMatchers("/resources/**").permitAll()
         .antMatchers("/images/**").permitAll()
