@@ -122,7 +122,7 @@ class OpsmxPlatformController {
                               @PathVariable("source") String source,
                               @PathVariable("source1") String source1,
                               @PathVariable("source2") String source2,
-                              @RequestParam(value = "permissionId", required = false) String permissionId,
+                              @RequestParam(value = "permission", required = false) String permissionId,
                               @RequestParam(value = "resourceType", required = false) String resourceType,
                               @RequestParam(value = "featureType", required = false) String featureType) {
 

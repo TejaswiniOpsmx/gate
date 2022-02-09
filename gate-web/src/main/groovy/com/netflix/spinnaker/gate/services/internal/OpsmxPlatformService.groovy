@@ -52,7 +52,7 @@ interface OpsmxPlatformService {
                               @Path('source') String source,
                               @Path('source1') String source1,
                               @Path('source2') String source2,
-                              @Query("permissionId") String permissionId,
+                              @Query("permission") String permissionId,
                               @Query("resourceType") String resourceType,
                               @Query("featureType") String featureType)
 
