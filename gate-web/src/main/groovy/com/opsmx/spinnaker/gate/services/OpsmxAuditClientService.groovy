@@ -18,7 +18,9 @@ package com.opsmx.spinnaker.gate.services
 
 import org.springframework.web.bind.annotation.RequestParam
 import retrofit.client.Response
+import retrofit.http.Body
 import retrofit.http.GET
+import retrofit.http.POST
 import retrofit.http.Path
 import retrofit.http.Query
 
@@ -100,4 +102,17 @@ interface OpsmxAuditClientService {
                                          @Query('startTime') Long startTime,
                                          @Query('endTime') Long endTime)
 
+  @POST("/auditclientservice/{version}/{source}/{source1}/{source2}")
+  Object getAuditClientResponse8(@Path('version') String version,
+                                 @Path('source') String source,
+                                 @Path('source1') String source1,
+                                 @Path('source2') String source2,
+                                 @Query('search') String search,
+                                 @Query('sortBy') String sortBy,
+                                 @Query('sortOrder') String sortOrder,
+                                 @Query('filterBy') Boolean filterBy,
+                                 @Query('pageNo') Integer pageNo,
+                                 @Query('pageLimit') Integer pageLimit,
+                                 @Query('noOfDays') String noOfDays,
+                                 @Body Object data)
 }

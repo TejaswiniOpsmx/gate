@@ -22,6 +22,8 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -179,5 +181,23 @@ class OpsmxAuditClientServiceController {
     }
     return ResponseEntity.status(response.getStatus()).build()
   }
+
+  @ApiOperation(value = "")
+  @PostMapping(value = "/{version}/{source}/{source1}/{source2}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  Object evaluateStaticPolicy(@PathVariable("version") String version,
+                              @PathVariable("source") String source,
+                              @PathVariable("source1") String source1,
+                              @PathVariable("source2") String source2,
+                              @RequestParam(value = "search",required = false) String search,
+                              @RequestParam(value = "sortBy",required = false) String sortBy,
+                              @RequestParam(value = "sortOrder",required = false) String sortOrder,
+                              @RequestParam(value = "filterBy",required = false) Boolean filterBy,
+                              @RequestParam(value="pageNo",required = false) Integer page,
+                              @RequestParam(value = "pageLimit" ,required = false) Integer pageLimit,
+                              @RequestParam(value = "noOfDays" ,required = false) String noOfDays,
+                              @RequestBody(required = false) Object data) {
+    return opsmxAuditClientService.getAuditClientResponse8(version, source,source1,source2, search, sortBy, sortOrder, filterBy, page, pageLimit,noOfDays,data)
+  }
+
 
 }
