@@ -16,14 +16,19 @@
 
 package com.netflix.spinnaker.gate.filters;
 
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 /**
@@ -31,7 +36,11 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
  * Setting the Content-Length header prevents a response from being transferred with chunked
  * encoding which may be problematic for some http clients.
  */
+@Slf4j
 public class ContentCachingFilter implements Filter {
+
+  private static final Gson gson = new Gson();
+
   @Override
   public void init(FilterConfig filterConfig) {}
 
@@ -39,10 +48,16 @@ public class ContentCachingFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
 
+    ContentCachingRequestWrapper requestWrapper =
+        new ContentCachingRequestWrapper((HttpServletRequest) request);
+    String requestPayload = new String(requestWrapper.getContentAsByteArray());
+    Map<String, Object> payload = gson.fromJson(requestPayload, Map.class);
+    log.info("request payload in content caching filter : {}", payload);
+
     ContentCachingResponseWrapper responseWrapper =
         new ContentCachingResponseWrapper((HttpServletResponse) response);
 
-    chain.doFilter(request, responseWrapper);
+    chain.doFilter(requestWrapper, responseWrapper);
     responseWrapper.copyBodyToResponse();
   }
 
