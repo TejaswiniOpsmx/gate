@@ -17,6 +17,7 @@
 
 package com.opsmx.spinnaker.gate.filter;
 
+import com.opsmx.spinnaker.gate.exception.AccessForbiddenException;
 import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +36,8 @@ public class RBACFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(req);
     try {
-      logRequestBody(wrappedRequest);
       chain.doFilter(wrappedRequest, response);
+      logRequestBody(wrappedRequest);
     } finally {
 
     }
@@ -52,6 +53,8 @@ public class RBACFilter implements Filter {
       } catch (Exception e) {
         log.error("error in reading request body : {}", e);
       }
+
+      throw new AccessForbiddenException("Access forbidden");
     }
   }
 }
