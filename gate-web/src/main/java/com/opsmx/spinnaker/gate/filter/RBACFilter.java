@@ -35,9 +35,10 @@ public class RBACFilter implements Filter {
     HttpServletRequest req = (HttpServletRequest) request;
     ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(req);
     try {
+      logRequestBody(wrappedRequest);
       chain.doFilter(wrappedRequest, response);
     } finally {
-      logRequestBody(wrappedRequest);
+
     }
   }
 
