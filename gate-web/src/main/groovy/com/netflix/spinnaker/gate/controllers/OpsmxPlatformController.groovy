@@ -149,9 +149,10 @@ class OpsmxPlatformController {
                               @PathVariable("source1") String source1,
                               @PathVariable("source2") String source2,
                               @PathVariable("source3") String source3,
-                              @PathVariable("source4") String source4) {
+                              @PathVariable("source4") String source4,
+                              @RequestParam(value = "featureType", required = false) String featureType) {
 
-    return opsmxPlatformService.getPlatformResponse7(version, type, source, source1, source2, source3, source4)
+    return opsmxPlatformService.getPlatformResponse7(version, type, source, source1, source2, source3, source4,featureType)
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")

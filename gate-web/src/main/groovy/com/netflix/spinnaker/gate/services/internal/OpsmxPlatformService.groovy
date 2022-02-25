@@ -16,6 +16,7 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
+import org.springframework.web.bind.annotation.RequestParam
 import retrofit.client.Response
 import retrofit.http.*
 
@@ -71,7 +72,8 @@ interface OpsmxPlatformService {
                               @Path('source1') String source1,
                               @Path('source2') String source2,
                               @Path('source3') String source3,
-                              @Path('source4') String source4)
+                              @Path('source4') String source4,
+                              @RequestParam(value = "featureType", required = false) String featureType)
 
   @GET("/platformservice/{version}/insights/download")
   Response downloadCSVFile(@Path('version') String version,
