@@ -31,6 +31,7 @@ interface OesAuthorizationService {
   ResponseEntity<Map<String, String>> isAuthorizedUser(@PathVariable("username") String username, @RequestParam("permission") String permission, @RequestParam("serviceId") Integer serviceId,
                                                        @RequestParam("pipelineId") Integer pipelineId, @RequestParam("gateId") Integer gateId, @RequestParam("approvalGateId") Integer approvalGateId,
                                                        @RequestParam("approvalGateInstanceId") Integer approvalGateInstanceId, @RequestParam("approvalGatePolicyId") Integer approvalGatePolicyId,
-                                                       @RequestHeader(value = "x-spinnaker-user") String userName)
+                                                       @RequestParam("applicationName") String applicationName, @RequestHeader(value = "x-spinnaker-user") String userName)
+
 
 }
