@@ -16,9 +16,7 @@
 
 package com.opsmx.spinnaker.gate.interceptors;
 
-import com.opsmx.spinnaker.gate.exception.XSpinnakerUserHeaderMissingException;
 import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 @Component
-@ConditionalOnExpression("${rbac.enabled:false}")
+@ConditionalOnExpression("${rbac.feature.application.enabled:true}")
 public class CustomGatesTriggerRbacInterceptor implements HandlerInterceptor {
 
   @Autowired private ApplicationFeatureRbac applicationFeatureRbac;
@@ -38,16 +36,10 @@ public class CustomGatesTriggerRbacInterceptor implements HandlerInterceptor {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
 
-    Optional.ofNullable(request.getHeader("x-spinnaker-user"))
-        .orElseThrow(
-            () -> new XSpinnakerUserHeaderMissingException("x-spinnaker-user header missing"));
-
     try {
-      String x_spinnaker_user = request.getHeader("x-spinnaker-user");
       log.info(
           "Request intercepted for authorizing if the user is having enough access to perform the action");
-      //      applicationFeatureRbac.authorizeUserForApprovalGateTrigger(
-      //        x_spinnaker_user, request.getRequestURI());
+      applicationFeatureRbac.authorizeUserForApprovalGateTrigger(request);
     } catch (NumberFormatException nfe) {
       log.debug("Ignoring the rbac check as it threw number format exception");
     }
