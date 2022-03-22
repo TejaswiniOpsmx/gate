@@ -21,17 +21,17 @@ import groovy.transform.Canonical
 
 @Canonical
 class ApprovalGateTriggerResponseModel {
-  private Integer id
-  private Integer approvalGateId
-  private String activatedTime
-  private String approvalCallbackURL
-  private String rejectionCallbackURL
-  private ApprovalStatus approvalStatus
-  private String navigationalURL
+  Integer id
+  Integer approvalGateId
+  String activatedTime
+  String approvalCallbackURL
+  String rejectionCallbackURL
+  ApprovalStatus approvalStatus
+  String navigationalURL
 
   @Canonical
   static class ApprovalStatus{
-      private String status
+    String status
   }
 
 }
