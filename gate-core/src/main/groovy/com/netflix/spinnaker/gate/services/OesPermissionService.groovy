@@ -41,7 +41,7 @@ class OesPermissionService extends PermissionService{
         if (roles == null){
           roles = new ArrayList<>()
           roles.add(defaultGroup)
-        } else if (!roles.isEmpty()){
+        } else if (roles.isEmpty()){
           roles.add(defaultGroup)
         }
         oesAuthorizationService.cacheUserGroups(roles, userId)
