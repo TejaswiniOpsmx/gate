@@ -94,7 +94,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     boolean sortRoles = false
     boolean forceLowercaseRoles = true
     UserAttributeMapping userAttributeMapping = new UserAttributeMapping()
-    long maxAuthenticationAge = 
+    long maxAuthenticationAge = 28800
 
     String signatureDigest = "SHA1" // SHA1 is the default registered in DefaultSecurityConfigurationBootstrap.populateSignatureParams
 
@@ -150,7 +150,6 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     //We need our session cookie to come across when we get redirected back from the IdP:
     defaultCookieSerializer.setSameSite(null)
     authConfig.configure(http)
-    log.info(" maxAuthenticationAge : " + samlSecurityConfigProperties.maxAuthenticationAge)
 
     http
       .rememberMe()
@@ -178,7 +177,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
       saml.init(http)
       initSignatureDigest() // Need to be after SAMLConfigurer initializes the global SecurityConfiguration
-      log.info(" maxAuthenticationAge : " + samlSecurityConfigProperties.maxAuthenticationAge)
+
     // @formatter:on
 
   }
@@ -203,7 +202,6 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   public WebSSOProfileConsumerImpl getWebSSOProfileConsumerImpl() {
     WebSSOProfileConsumerImpl profileConsumer = new WebSSOProfileConsumerImpl();
     profileConsumer.setMaxAuthenticationAge(samlSecurityConfigProperties.maxAuthenticationAge);
-    profileConsumer.setResponseSkew(7200);
     return profileConsumer;
   }
 
