@@ -25,6 +25,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class BasicAuthProvider implements AuthenticationProvider {
 
@@ -52,8 +53,12 @@ public class BasicAuthProvider implements AuthenticationProvider {
     User user = new User();
     user.setEmail(name);
     user.setUsername(name);
-    user.setRoles(Collections.singletonList("admin"));
-    return new UsernamePasswordAuthenticationToken(user, password, new ArrayList<>());
+    user.setRoles(Arrays.asList("USER" , "ADMIN" , "ROLE_ADMIN" , "ROLE_USER"));
+    SimpleGrantedAuthority user_auth = new SimpleGrantedAuthority("USER");
+    SimpleGrantedAuthority role_user = new SimpleGrantedAuthority("ROLE_USER");
+    SimpleGrantedAuthority role_admin = new SimpleGrantedAuthority("ROLE_ADMIN");
+    SimpleGrantedAuthority admin_auth = new SimpleGrantedAuthority("ADMIN");
+    return new UsernamePasswordAuthenticationToken(user, password, Arrays.asList(user_auth, admin_auth, role_admin, role_user));
   }
 
   @Override
