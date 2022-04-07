@@ -15,9 +15,9 @@
  */
 package com.netflix.spinnaker.gate.security.basic;
 
+import com.netflix.spinnaker.gate.services.PermissionService;
 import com.netflix.spinnaker.security.User;
-import java.util.ArrayList;
-import java.util.Collections;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -26,11 +26,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.util.Arrays;
 
 public class BasicAuthProvider implements AuthenticationProvider {
 
   private final SecurityProperties securityProperties;
+
+  @Autowired
+  PermissionService permissionService;
 
   public BasicAuthProvider(SecurityProperties securityProperties) {
     this.securityProperties = securityProperties;
@@ -59,6 +63,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
     SimpleGrantedAuthority role_user = new SimpleGrantedAuthority("ROLE_USER");
     SimpleGrantedAuthority role_admin = new SimpleGrantedAuthority("ROLE_ADMIN");
     SimpleGrantedAuthority admin_auth = new SimpleGrantedAuthority("ADMIN");
+
+    permissionService.loginWithRoles(name, Arrays.asList("USER" , "ADMIN" , "ROLE_ADMIN" , "ROLE_USER"));
     return new UsernamePasswordAuthenticationToken(user, password, Arrays.asList(user_auth, admin_auth, role_admin, role_user));
   }
 
@@ -67,3 +73,4 @@ public class BasicAuthProvider implements AuthenticationProvider {
     return authentication == UsernamePasswordAuthenticationToken.class;
   }
 }
+

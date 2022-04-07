@@ -50,10 +50,7 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//    auth.authenticationProvider(authProvider);
-    auth.inMemoryAuthentication()
-      .withUser("admin").password("saporadmin")
-      .authorities("USER" , "ADMIN" , "ROLE_ADMIN" , "ROLE_USER");
+    auth.authenticationProvider(authProvider);
   }
 
   @Override
