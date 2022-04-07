@@ -48,9 +48,12 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
     this.authProvider = new BasicAuthProvider(securityProperties);
   }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) {
-    auth.authenticationProvider(authProvider);
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//    auth.authenticationProvider(authProvider);
+    auth.inMemoryAuthentication()
+      .withUser("admin").password("saporadmin")
+      .authorities("USER" , "ADMIN" , "ROLE_ADMIN" , "ROLE_USER");
   }
 
   @Override
@@ -68,3 +71,4 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
     authConfig.configure(web);
   }
 }
+
