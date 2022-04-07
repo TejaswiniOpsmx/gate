@@ -25,9 +25,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class BasicAuthProvider implements AuthenticationProvider {
@@ -57,19 +61,22 @@ public class BasicAuthProvider implements AuthenticationProvider {
       throw new BadCredentialsException("Invalid username/password combination");
     }
 
-
+    List<String> roles = Objects.requireNonNullElse(securityProperties.getUser().getRoles(), Collections.singletonList("USER"));
 
     User user = new User();
     user.setEmail(name);
     user.setUsername(name);
-    user.setRoles(Arrays.asList("USER" , "ADMIN" , "ROLE_ADMIN" , "ROLE_USER"));
-    SimpleGrantedAuthority user_auth = new SimpleGrantedAuthority("USER");
-    SimpleGrantedAuthority role_user = new SimpleGrantedAuthority("ROLE_USER");
-    SimpleGrantedAuthority role_admin = new SimpleGrantedAuthority("ROLE_ADMIN");
-    SimpleGrantedAuthority admin_auth = new SimpleGrantedAuthority("ADMIN");
+    user.setRoles(roles);
 
-    permissionService.loginWithRoles(name, Arrays.asList("USER" , "ADMIN" , "ROLE_ADMIN" , "ROLE_USER"));
-    return new UsernamePasswordAuthenticationToken(user, password, Arrays.asList(role_admin));
+    List<GrantedAuthority> grantedAuthorities = roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+
+//    SimpleGrantedAuthority user_auth = new SimpleGrantedAuthority("USER");
+//    SimpleGrantedAuthority role_user = new SimpleGrantedAuthority("ROLE_USER");
+//    SimpleGrantedAuthority role_admin = new SimpleGrantedAuthority("ROLE_ADMIN");
+//    SimpleGrantedAuthority admin_auth = new SimpleGrantedAuthority("ADMIN");
+
+    permissionService.loginWithRoles(name, roles);
+    return new UsernamePasswordAuthenticationToken(user, password, grantedAuthorities);
   }
 
   @Override
