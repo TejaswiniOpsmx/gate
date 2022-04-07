@@ -27,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 @Slf4j
@@ -69,7 +70,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
     SimpleGrantedAuthority admin_auth = new SimpleGrantedAuthority("ADMIN");
 
     permissionService.loginWithRoles(name, Arrays.asList("USER" , "ADMIN" , "ROLE_ADMIN" , "ROLE_USER"));
-    return new UsernamePasswordAuthenticationToken(user, password, Arrays.asList(user_auth, admin_auth, role_admin, role_user));
+    return new UsernamePasswordAuthenticationToken(user, password, new ArrayList<>());
   }
 
   @Override
