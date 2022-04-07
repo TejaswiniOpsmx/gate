@@ -44,7 +44,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
                            List<String> roles) {
     this.securityProperties = securityProperties;
     this.permissionService = permissionService;
-    this.roles = roles;
+    this.roles = Arrays.asList("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN");
 
     if (securityProperties.getUser() == null) {
       throw new AuthenticationServiceException("User credentials are not configured");
