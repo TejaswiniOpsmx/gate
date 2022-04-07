@@ -30,6 +30,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Arrays;
 
 @Slf4j
 public class BasicAuthProvider implements AuthenticationProvider {
