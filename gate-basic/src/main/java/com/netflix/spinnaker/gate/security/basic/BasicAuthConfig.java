@@ -20,6 +20,7 @@ import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
 import com.netflix.spinnaker.gate.services.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.session.web.http.DefaultCookieSerializer;
+
+import java.util.List;
 
 @ConditionalOnExpression("${security.basicform.enabled:false}")
 @Configuration
@@ -44,10 +47,13 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   DefaultCookieSerializer defaultCookieSerializer;
 
+  @Value("${security.user.roles:USER}")
+  List<String> roles;
+
   @Autowired
   public BasicAuthConfig(AuthConfig authConfig, SecurityProperties securityProperties, PermissionService permissionService) {
     this.authConfig = authConfig;
-    this.authProvider = new BasicAuthProvider(securityProperties, permissionService);
+    this.authProvider = new BasicAuthProvider(securityProperties, permissionService, roles);
   }
 
   @Autowired
@@ -70,3 +76,4 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
     authConfig.configure(web);
   }
 }
+

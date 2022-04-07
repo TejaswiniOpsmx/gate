@@ -28,9 +28,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,10 +37,14 @@ public class BasicAuthProvider implements AuthenticationProvider {
   private final SecurityProperties securityProperties;
 
   private final PermissionService permissionService;
+  private final List<String> roles;
 
-  public BasicAuthProvider(SecurityProperties securityProperties, PermissionService permissionService) {
+
+  public BasicAuthProvider(SecurityProperties securityProperties, PermissionService permissionService,
+                           List<String> roles) {
     this.securityProperties = securityProperties;
     this.permissionService = permissionService;
+    this.roles = roles;
 
     if (securityProperties.getUser() == null) {
       throw new AuthenticationServiceException("User credentials are not configured");
@@ -56,13 +58,12 @@ public class BasicAuthProvider implements AuthenticationProvider {
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
     log.info("******************** user provided name is: {} and password is: {}" , name, password);
     log.info("******************** Configured name is: {} and password is: {}" , securityProperties.getUser().getName(), securityProperties.getUser().getPassword());
-    log.info("******************** user provided roles are: {}" , securityProperties.getUser().getRoles());
+    log.info("******************** user provided roles are: {}" , roles);
     if (!securityProperties.getUser().getName().equals(name)
         || !securityProperties.getUser().getPassword().equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
 
-    List<String> roles = Objects.requireNonNullElse(securityProperties.getUser().getRoles(), Collections.singletonList("USER"));
 
     User user = new User();
     user.setEmail(name);
