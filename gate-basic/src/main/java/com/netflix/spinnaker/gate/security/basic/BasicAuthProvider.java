@@ -17,7 +17,7 @@ package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.services.PermissionService;
 import com.netflix.spinnaker.security.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -29,15 +29,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Arrays;
 
+@Slf4j
 public class BasicAuthProvider implements AuthenticationProvider {
 
   private final SecurityProperties securityProperties;
 
-  @Autowired
-  PermissionService permissionService;
+  private final PermissionService permissionService;
 
-  public BasicAuthProvider(SecurityProperties securityProperties) {
+  public BasicAuthProvider(SecurityProperties securityProperties, PermissionService permissionService) {
     this.securityProperties = securityProperties;
+    this.permissionService = permissionService;
 
     if (securityProperties.getUser() == null) {
       throw new AuthenticationServiceException("User credentials are not configured");
@@ -49,11 +50,14 @@ public class BasicAuthProvider implements AuthenticationProvider {
     String name = authentication.getName();
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
-
+    log.info("******************** user provided name is: {} and password is: {}" , name, password);
+    log.info("******************** Configured name is: {} and password is: {}" , securityProperties.getUser().getName(), securityProperties.getUser().getPassword());
     if (!securityProperties.getUser().getName().equals(name)
         || !securityProperties.getUser().getPassword().equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
+
+
 
     User user = new User();
     user.setEmail(name);
