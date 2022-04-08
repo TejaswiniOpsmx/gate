@@ -44,11 +44,11 @@ public class BasicAuthProvider implements AuthenticationProvider {
 
 
   public BasicAuthProvider(SecurityProperties securityProperties, PermissionService permissionService,
-                           List<Object> roles) {
+                           List<String> roles) {
     this.securityProperties = securityProperties;
     this.permissionService = permissionService;
-    
-    this.roles = Optional.ofNullable(roles).orElse(new ArrayList<>()).stream().map(String.class::cast).collect(Collectors.toList());
+
+    this.roles = roles;
 //    this.roles = Arrays.asList("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN");
 
     if (securityProperties.getUser() == null) {

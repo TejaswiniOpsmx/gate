@@ -51,9 +51,9 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   List<Object> roles;
 
   @Autowired
-  public BasicAuthConfig(AuthConfig authConfig, SecurityProperties securityProperties, PermissionService permissionService) {
+  public BasicAuthConfig(AuthConfig authConfig, SecurityProperties securityProperties, PermissionService permissionService, RolesConfig rolesConfig) {
     this.authConfig = authConfig;
-    this.authProvider = new BasicAuthProvider(securityProperties, permissionService, roles);
+    this.authProvider = new BasicAuthProvider(securityProperties, permissionService, rolesConfig.getUserRoles().getRoles());
   }
 
   @Autowired
