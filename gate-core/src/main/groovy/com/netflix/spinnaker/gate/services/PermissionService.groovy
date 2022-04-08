@@ -41,9 +41,11 @@ import javax.annotation.Nonnull
 import java.time.Duration
 
 import static com.netflix.spinnaker.gate.retrofit.UpstreamBadRequest.classifyError
+import org.springframework.cloud.openfeign.EnableFeignClients
 
 @Slf4j
 @Component
+@EnableFeignClients
 class PermissionService {
 
   @Autowired

@@ -37,6 +37,8 @@ dependencies {
   implementation "com.netflix.spectator:spectator-api"
   implementation "com.github.ben-manes.caffeine:guava"
   implementation "org.apache.commons:commons-lang3"
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.4.RELEASE'
+
 }
 
 sourceSets {
