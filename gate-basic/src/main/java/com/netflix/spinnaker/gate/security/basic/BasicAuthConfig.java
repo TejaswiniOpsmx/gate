@@ -19,6 +19,7 @@ package com.netflix.spinnaker.gate.security.basic;
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
 import com.netflix.spinnaker.gate.services.PermissionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -32,12 +33,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ConditionalOnExpression("${security.basicform.enabled:false}")
 @Configuration
 @SpinnakerAuthConfig
 @EnableWebSecurity
+@Slf4j
 public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   private final AuthConfig authConfig;
@@ -50,10 +55,33 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   @Value("${security.user.roles: USER}")
   List<Object> roles;
 
+  @Value("${security.user.roles:}")
+  String rolesStr;
+
+  @Value("${spring.security.user.roles:}")
+  String springRolesStr;
+
   @Autowired
   public BasicAuthConfig(AuthConfig authConfig, SecurityProperties securityProperties, PermissionService permissionService, RolesConfig rolesConfig) {
     this.authConfig = authConfig;
-    this.authProvider = new BasicAuthProvider(securityProperties, permissionService, rolesConfig.getUserRoles().getRoles());
+
+    List<String> rolesLst = null;
+    
+    if(rolesStr != null && !rolesStr.isEmpty()){
+      log.info("rolesStr: " + rolesStr);
+      rolesLst = Stream.of(rolesStr.split(",")).collect(Collectors.toList());
+    } else if(springRolesStr != null && !springRolesStr.isEmpty()){
+      log.info("springRolesStr: " + springRolesStr);
+      rolesLst = Stream.of(rolesStr.split(",")).collect(Collectors.toList());
+    }
+    
+    if(rolesLst == null){
+      log.info("springRolesStr and  rolesStr are not set");
+      rolesLst = new ArrayList<>();
+    }
+    
+
+    this.authProvider = new BasicAuthProvider(securityProperties, permissionService, rolesLst);
   }
 
   @Autowired
