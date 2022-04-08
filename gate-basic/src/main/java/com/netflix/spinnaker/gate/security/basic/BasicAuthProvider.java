@@ -28,8 +28,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,10 +44,11 @@ public class BasicAuthProvider implements AuthenticationProvider {
 
 
   public BasicAuthProvider(SecurityProperties securityProperties, PermissionService permissionService,
-                           List<String> roles) {
+                           List<Object> roles) {
     this.securityProperties = securityProperties;
     this.permissionService = permissionService;
-    this.roles = roles;
+    
+    this.roles = Optional.ofNullable(roles).orElse(new ArrayList<>()).stream().map(String.class::cast).collect(Collectors.toList());
 //    this.roles = Arrays.asList("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN");
 
     if (securityProperties.getUser() == null) {

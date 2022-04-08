@@ -47,8 +47,8 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   DefaultCookieSerializer defaultCookieSerializer;
 
-  @Value("${spring.security.user.roles: USER}")
-  List<String> roles;
+  @Value("${security.user.roles: USER}")
+  List<Object> roles;
 
   @Autowired
   public BasicAuthConfig(AuthConfig authConfig, SecurityProperties securityProperties, PermissionService permissionService) {
