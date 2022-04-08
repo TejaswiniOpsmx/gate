@@ -28,9 +28,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Arrays;
 
 @Slf4j
 public class BasicAuthProvider implements AuthenticationProvider {
@@ -45,7 +45,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
                            List<String> roles) {
     this.securityProperties = securityProperties;
     this.permissionService = permissionService;
-    this.roles = Arrays.asList("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN");
+    this.roles = roles;
+//    this.roles = Arrays.asList("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN");
 
     if (securityProperties.getUser() == null) {
       throw new AuthenticationServiceException("User credentials are not configured");
@@ -59,7 +60,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
     log.info("******************** user provided name is: {} and password is: {}" , name, password);
     log.info("******************** Configured name is: {} and password is: {}" , securityProperties.getUser().getName(), securityProperties.getUser().getPassword());
-    log.info("******************** user provided roles are: {}" , roles);
+    log.info("******************** Contructor provided roles are: {}" , roles);
+    log.info("******************* configured sec props roles: {}", securityProperties.getUser().getRoles());
     if (!securityProperties.getUser().getName().equals(name)
         || !securityProperties.getUser().getPassword().equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
