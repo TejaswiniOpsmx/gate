@@ -16,32 +16,23 @@
 
 package com.netflix.spinnaker.gate.security.basic;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Configuration
-@ConfigurationProperties("spring.security")
-public class RolesConfig implements InitializingBean {
+@ConfigurationProperties("spring.security.user")
+public class RolesConfig {
 
-  private UserRoles userRoles = new UserRoles();
-
-  @Override
-  public void afterPropertiesSet() throws Exception {
-    userRoles.roles =
-      userRoles.roles.stream()
-//        .map(String::toLowerCase)
-        .map(String::trim)
-        .collect(Collectors.toList());
-  }
+  private Roles userRoles = new Roles();
 
   @Data
-  public static class UserRoles {
+  public static class Roles {
     private List<String> roles = new ArrayList<>();
   }
 }
+
