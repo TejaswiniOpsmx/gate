@@ -18,8 +18,10 @@ package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
+import com.netflix.spinnaker.gate.services.OesPermissionService;
 import com.netflix.spinnaker.gate.services.PermissionService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -33,38 +35,35 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @ConditionalOnExpression("${security.basicform.enabled:false}")
 @Configuration
 @SpinnakerAuthConfig
 @EnableWebSecurity
-@Slf4j
 public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   private final AuthConfig authConfig;
 
   private final BasicAuthProvider authProvider;
 
-  @Autowired
-  DefaultCookieSerializer defaultCookieSerializer;
+  @Autowired DefaultCookieSerializer defaultCookieSerializer;
 
   @Value("${security.user.roles:}")
   String roles;
 
   @Autowired
-  public BasicAuthConfig(AuthConfig authConfig, SecurityProperties securityProperties, PermissionService permissionService) {
+  public BasicAuthConfig(
+      AuthConfig authConfig,
+      SecurityProperties securityProperties,
+      OesPermissionService permissionService) {
     this.authConfig = authConfig;
     this.authProvider = new BasicAuthProvider(securityProperties, permissionService);
   }
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    log.info("authProvider configureGlobal");
-    if(roles != null && !roles.isEmpty()){
-      log.info("authProvider roles setting ");
-      authProvider.setRoles(Stream.of(roles.split(",")).collect(Collectors.toList()));
+    if (roles != null && !roles.isEmpty()) {
+      authProvider.setRoles(
+          Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
     }
     auth.authenticationProvider(authProvider);
   }
