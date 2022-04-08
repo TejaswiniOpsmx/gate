@@ -63,7 +63,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
     log.info("******************** user provided name is: {} and password is: {}" , name, password);
     log.info("******************** Configured name is: {} and password is: {}" , securityProperties.getUser().getName(), securityProperties.getUser().getPassword());
-    log.info("******************** Contructor provided roles are: {}" , roles);
+    log.info("******************** RoleConfig provided roles are: {}" , roles);
     log.info("******************* configured sec props roles: {}", securityProperties.getUser().getRoles());
     if (!securityProperties.getUser().getName().equals(name)
         || !securityProperties.getUser().getPassword().equals(password)) {
