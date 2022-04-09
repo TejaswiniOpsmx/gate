@@ -75,10 +75,10 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
       List<String> rols =
           Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList());
       log.info("Roles configured are : " + rols);
-      log.info("The name and password are : {} , {}", name, password);
+      log.info("The name and password are : {} , {}", this.name, this.password);
       authProvider.setRoles(rols);
-      authProvider.setName(name);
-      authProvider.setPassword(password);
+      authProvider.setName(this.name);
+      authProvider.setPassword(this.password);
     }
     auth.authenticationProvider(authProvider);
   }
