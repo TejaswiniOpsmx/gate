@@ -58,6 +58,8 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   @Value("${security.user.password:}")
   String password;
 
+  @Autowired PermissionService permissionService;
+
   @Autowired
   public BasicAuthConfig(
       AuthConfig authConfig,
@@ -69,18 +71,20 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    if (name == null
-        || name.isEmpty()
-        || password == null
-        || password.isEmpty()
-        || roles == null && roles.isEmpty()) {
+    if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
       throw new AuthenticationServiceException(
-          "User credentials are not configured properly. Please check you have provided username, password, roles properties");
+          "User credentials are not configured properly. Please check username and password are properly configured");
     }
-    authProvider.setRoles(
-        Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
+
+    if ((roles == null || roles.isEmpty()) && permissionService.isEnabled()) {
+      throw new AuthenticationServiceException(
+          "User credentials are not configured properly. Please check roles are properly configured");
+    }
+
     authProvider.setName(this.name);
     authProvider.setPassword(this.password);
+    authProvider.setRoles(
+        Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
     auth.authenticationProvider(authProvider);
   }
 

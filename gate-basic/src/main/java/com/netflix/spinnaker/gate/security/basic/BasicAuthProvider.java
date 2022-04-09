@@ -38,11 +38,6 @@ public class BasicAuthProvider implements AuthenticationProvider {
   private final OesAuthorizationService oesAuthorizationService;
 
   private List<String> roles;
-
-  public void setRoles(List<String> roles) {
-    this.roles = roles;
-  }
-
   private String name;
   private String password;
 
@@ -57,6 +52,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
     String name = authentication.getName();
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
+
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
@@ -68,6 +64,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
     user.setRoles(Collections.singletonList("USER"));
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+
     if (roles != null && !roles.isEmpty() && permissionService != null) {
       user.setRoles(roles);
       grantedAuthorities =
@@ -76,8 +73,6 @@ public class BasicAuthProvider implements AuthenticationProvider {
       permissionService.loginWithRoles(name, roles);
       // Updating roles in platform service
       oesAuthorizationService.cacheUserGroups(roles, name);
-    } else {
-      log.debug("If rbac is enabled at spinnaker then roles need to be configured for basic auth.");
     }
 
     return new UsernamePasswordAuthenticationToken(user, password, grantedAuthorities);
@@ -86,6 +81,10 @@ public class BasicAuthProvider implements AuthenticationProvider {
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication == UsernamePasswordAuthenticationToken.class;
+  }
+
+  public void setRoles(List<String> roles) {
+    this.roles = roles;
   }
 
   public void setName(String name) {
