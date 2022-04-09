@@ -78,7 +78,7 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
       log.info("The name and password are : {} , {}", name, password);
       authProvider.setRoles(rols);
       authProvider.setName(name);
-      authProvider.setName(password);
+      authProvider.setPassword(password);
     }
     auth.authenticationProvider(authProvider);
   }
