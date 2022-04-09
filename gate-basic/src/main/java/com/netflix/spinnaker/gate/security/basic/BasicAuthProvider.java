@@ -45,6 +45,9 @@ public class BasicAuthProvider implements AuthenticationProvider {
     this.roles = roles;
   }
 
+  private String name;
+  private String password;
+
   public BasicAuthProvider(
       SecurityProperties securityProperties, OesPermissionService permissionService) {
     this.securityProperties = securityProperties;
@@ -61,12 +64,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
 
     log.info("submitted name and password is: {} , {}", name, password);
-    log.info(
-        "reconfigured name and password is: {} , {}",
-        securityProperties.getUser().getName(),
-        securityProperties.getUser().getPassword());
-    if (!securityProperties.getUser().getName().equals(name)
-        || !securityProperties.getUser().getPassword().equals(password)) {
+    log.info("configured name and password is: {} , {}", this.name, this.password);
+    if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
 
@@ -92,5 +91,13 @@ public class BasicAuthProvider implements AuthenticationProvider {
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication == UsernamePasswordAuthenticationToken.class;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 }
