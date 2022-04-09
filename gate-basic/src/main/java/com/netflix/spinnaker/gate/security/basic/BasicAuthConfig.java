@@ -18,7 +18,8 @@ package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
-import com.netflix.spinnaker.gate.services.OesPermissionService;
+import com.netflix.spinnaker.gate.services.OesAuthorizationService;
+import com.netflix.spinnaker.gate.services.PermissionService;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,10 +63,12 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   public BasicAuthConfig(
       AuthConfig authConfig,
       SecurityProperties securityProperties,
-      OesPermissionService permissionService) {
+      PermissionService permissionService,
+      OesAuthorizationService oesAuthorizationService) {
     log.info("OesPermissionService is : " + permissionService);
     this.authConfig = authConfig;
-    this.authProvider = new BasicAuthProvider(securityProperties, permissionService);
+    this.authProvider =
+        new BasicAuthProvider(securityProperties, permissionService, oesAuthorizationService);
   }
 
   @Autowired

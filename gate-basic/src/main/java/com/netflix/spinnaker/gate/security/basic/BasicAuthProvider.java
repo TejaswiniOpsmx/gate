@@ -15,7 +15,8 @@
  */
 package com.netflix.spinnaker.gate.security.basic;
 
-import com.netflix.spinnaker.gate.services.OesPermissionService;
+import com.netflix.spinnaker.gate.services.OesAuthorizationService;
+import com.netflix.spinnaker.gate.services.PermissionService;
 import com.netflix.spinnaker.security.User;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +38,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
 
   private final SecurityProperties securityProperties;
 
-  private final OesPermissionService permissionService;
+  private final PermissionService permissionService;
+  private final OesAuthorizationService oesAuthorizationService;
 
   private List<String> roles;
 
@@ -49,9 +51,12 @@ public class BasicAuthProvider implements AuthenticationProvider {
   private String password;
 
   public BasicAuthProvider(
-      SecurityProperties securityProperties, OesPermissionService permissionService) {
+      SecurityProperties securityProperties,
+      PermissionService permissionService,
+      OesAuthorizationService oesAuthorizationService) {
     this.securityProperties = securityProperties;
     this.permissionService = permissionService;
+    this.oesAuthorizationService = oesAuthorizationService;
     if (securityProperties.getUser() == null) {
       throw new AuthenticationServiceException("User credentials are not configured");
     }
@@ -81,6 +86,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
       grantedAuthorities =
           roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
       permissionService.loginWithRoles(name, roles);
+      log.info("Caching roles for user: {} with roles: {}", name, roles);
+      oesAuthorizationService.cacheUserGroups(roles, name);
     } else {
       log.debug("If rbac is enabled at spinnaker then roles need to be configured for basic auth.");
     }
