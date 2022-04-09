@@ -20,15 +20,14 @@ import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import com.netflix.spinnaker.gate.services.PermissionService;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -62,27 +61,26 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   public BasicAuthConfig(
       AuthConfig authConfig,
-      SecurityProperties securityProperties,
       PermissionService permissionService,
       OesAuthorizationService oesAuthorizationService) {
-    log.info("OesPermissionService is : " + permissionService);
     this.authConfig = authConfig;
-    this.authProvider =
-        new BasicAuthProvider(securityProperties, permissionService, oesAuthorizationService);
+    this.authProvider = new BasicAuthProvider(permissionService, oesAuthorizationService);
   }
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    log.info("Roles setting started");
-    if (roles != null && !roles.isEmpty()) {
-      List<String> rols =
-          Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList());
-      log.info("Roles configured are : " + rols);
-      log.info("The name and password are : {} , {}", this.name, this.password);
-      authProvider.setRoles(rols);
-      authProvider.setName(this.name);
-      authProvider.setPassword(this.password);
+    if (name == null
+        || name.isEmpty()
+        || password == null
+        || password.isEmpty()
+        || roles == null && roles.isEmpty()) {
+      throw new AuthenticationServiceException(
+          "User credentials are not configured properly. Please check you have provided username, password, roles properties");
     }
+    authProvider.setRoles(
+        Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
+    authProvider.setName(this.name);
+    authProvider.setPassword(this.password);
     auth.authenticationProvider(authProvider);
   }
 

@@ -23,9 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,8 +33,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Slf4j
 public class BasicAuthProvider implements AuthenticationProvider {
-
-  private final SecurityProperties securityProperties;
 
   private final PermissionService permissionService;
   private final OesAuthorizationService oesAuthorizationService;
@@ -51,15 +47,9 @@ public class BasicAuthProvider implements AuthenticationProvider {
   private String password;
 
   public BasicAuthProvider(
-      SecurityProperties securityProperties,
-      PermissionService permissionService,
-      OesAuthorizationService oesAuthorizationService) {
-    this.securityProperties = securityProperties;
+      PermissionService permissionService, OesAuthorizationService oesAuthorizationService) {
     this.permissionService = permissionService;
     this.oesAuthorizationService = oesAuthorizationService;
-    if (securityProperties.getUser() == null) {
-      throw new AuthenticationServiceException("User credentials are not configured");
-    }
   }
 
   @Override
@@ -67,9 +57,6 @@ public class BasicAuthProvider implements AuthenticationProvider {
     String name = authentication.getName();
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
-
-    log.info("submitted name and password is: {} , {}", name, password);
-    log.info("configured name and password is: {} , {}", this.name, this.password);
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
@@ -85,8 +72,9 @@ public class BasicAuthProvider implements AuthenticationProvider {
       user.setRoles(roles);
       grantedAuthorities =
           roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+      // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
-      log.info("Caching roles for user: {} with roles: {}", name, roles);
+      // Updating roles in platform service
       oesAuthorizationService.cacheUserGroups(roles, name);
     } else {
       log.debug("If rbac is enabled at spinnaker then roles need to be configured for basic auth.");
