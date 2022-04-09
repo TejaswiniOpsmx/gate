@@ -76,7 +76,9 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
           "User credentials are not configured properly. Please check username and password are properly configured");
     }
 
-    if ((roles == null || roles.isEmpty()) && permissionService.isEnabled()) {
+    if ((roles == null || roles.isEmpty())
+        && permissionService != null
+        && permissionService.isEnabled()) {
       throw new AuthenticationServiceException(
           "User credentials are not configured properly. Please check roles are properly configured");
     }
