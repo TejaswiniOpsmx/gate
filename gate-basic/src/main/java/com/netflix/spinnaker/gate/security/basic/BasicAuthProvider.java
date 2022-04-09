@@ -16,7 +16,6 @@
 package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.services.OesPermissionService;
-import com.netflix.spinnaker.gate.services.PermissionService;
 import com.netflix.spinnaker.security.User;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,6 +59,12 @@ public class BasicAuthProvider implements AuthenticationProvider {
     String name = authentication.getName();
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
+
+    log.info("submitted name and password is: {} , {}", name, password);
+    log.info(
+        "reconfigured name and password is: {} , {}",
+        securityProperties.getUser().getName(),
+        securityProperties.getUser().getPassword());
     if (!securityProperties.getUser().getName().equals(name)
         || !securityProperties.getUser().getPassword().equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
@@ -89,4 +94,3 @@ public class BasicAuthProvider implements AuthenticationProvider {
     return authentication == UsernamePasswordAuthenticationToken.class;
   }
 }
-

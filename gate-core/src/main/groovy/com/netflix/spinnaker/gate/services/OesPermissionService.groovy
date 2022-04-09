@@ -27,6 +27,8 @@ class OesPermissionService extends PermissionService{
   @Override
   void loginWithRoles(String userId, Collection<String> roles) {
     log.info("Started logging in for user: {} with roles: {}", userId, roles)
+    log.info("Is isOesAuthorizationServiceEnabled: {}" , isOesAuthorizationServiceEnabled)
+    log.info("Is fiatStatus.isEnabled: {}" , fiatStatus.isEnabled())
     if (fiatStatus.isEnabled()) {
         try {
           AuthenticatedRequest.allowAnonymous({

@@ -19,9 +19,10 @@ package com.netflix.spinnaker.gate.security.basic;
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
 import com.netflix.spinnaker.gate.services.OesPermissionService;
-import com.netflix.spinnaker.gate.services.PermissionService;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -39,6 +40,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @Configuration
 @SpinnakerAuthConfig
 @EnableWebSecurity
+@Slf4j
 public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   private final AuthConfig authConfig;
@@ -55,15 +57,19 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
       AuthConfig authConfig,
       SecurityProperties securityProperties,
       OesPermissionService permissionService) {
+    log.info("OesPermissionService is : " + permissionService);
     this.authConfig = authConfig;
     this.authProvider = new BasicAuthProvider(securityProperties, permissionService);
   }
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    log.info("Roles setting started");
     if (roles != null && !roles.isEmpty()) {
-      authProvider.setRoles(
-          Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
+      List<String> rols =
+          Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList());
+      log.info("Roles configured are : " + rols);
+      authProvider.setRoles(rols);
     }
     auth.authenticationProvider(authProvider);
   }
@@ -83,4 +89,3 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
     authConfig.configure(web);
   }
 }
-
