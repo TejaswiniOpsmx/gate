@@ -76,17 +76,17 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
           "User credentials are not configured properly. Please check username and password are properly configured");
     }
 
-    if ((roles == null || roles.isEmpty())
-        && permissionService != null
-        && permissionService.isEnabled()) {
-      throw new AuthenticationServiceException(
-          "User credentials are not configured properly. Please check roles are properly configured");
+    if (roles == null || roles.isEmpty()) {
+      log.warn(
+          "No roles are configured for the user. This would leads to authorizations issues if RBAC is enabled");
+    } else {
+      authProvider.setRoles(
+          Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
     }
 
     authProvider.setName(this.name);
     authProvider.setPassword(this.password);
-    authProvider.setRoles(
-        Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
+
     auth.authenticationProvider(authProvider);
   }
 
