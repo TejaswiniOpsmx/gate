@@ -18,6 +18,7 @@ package com.opsmx.spinnaker.gate.audit;
 
 import com.opsmx.spinnaker.gate.enums.AuditEventType;
 import com.opsmx.spinnaker.gate.enums.OesServices;
+import groovy.lang.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 @EnableAsync
 public class UserActivityAuditListener implements ApplicationListener {
 
-  @Autowired private AuditHandler auditHandler;
+  @Autowired @Lazy private AuditHandler auditHandler;
 
   @Async
   @Override
