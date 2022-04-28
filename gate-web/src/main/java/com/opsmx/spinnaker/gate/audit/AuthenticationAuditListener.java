@@ -17,6 +17,7 @@
 package com.opsmx.spinnaker.gate.audit;
 
 import com.opsmx.spinnaker.gate.enums.AuditEventType;
+import groovy.lang.Lazy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.security.AbstractAuthenticationAuditListener;
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Component;
 @EnableAsync
 public class AuthenticationAuditListener extends AbstractAuthenticationAuditListener {
 
-  @Autowired private AuditHandler auditHandler;
+  @Autowired @Lazy private AuditHandler auditHandler;
 
   @Async
   @Override
